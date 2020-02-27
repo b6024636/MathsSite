@@ -15,7 +15,7 @@ class SchoolTestController extends Controller
     {
         $schoolstest = \App\SchoolTest::all();
 
-        return view('schooltest/viewschoolstest', ['allSchools' => $schoolstest]);
+        return view('schooltest/viewschooltest', ['allSchools' => $schoolstest]);
     }
 
     /**
