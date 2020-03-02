@@ -5,7 +5,6 @@
             <!-- if there are creation errors, they will show here -->
             {{ HTML::ul($errors->all()) }}
             {{ Form::open(array('url' => 'schooltest')) }}
-{{--            <form method="POST" action="{{ config('app.url')}}/schooltest">--}}
                 <h1> Enter details to create a school</h1>
                 <div class="form-input">
                     <label>Name</label> <input type="text" name="name">
@@ -23,8 +22,6 @@
                     <label>Description</label> <textarea id="confirmationText" class="text"  cols="50" rows ="15" name="description"></textarea>
                 </div>
 
-{{--                <button type="submit">Submit</button>--}}
             {{ Form::submit('Create', array('class' => 'btn btn-primary')) }}
-{{--            </form>--}}
             {{ Form::close()  }}
 @endsection
