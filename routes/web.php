@@ -20,4 +20,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/schooltest', 'SchoolTestController');
-Route::resource('/school/schooladdress', 'School\SchoolAddressController');
+Route::resource('/schools/schooladdress', 'School\SchoolAddressController');
+Route::resource('/schools/school', 'School\SchoolController');

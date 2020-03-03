@@ -20,7 +20,7 @@ class SchoolAddressController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
@@ -31,11 +31,11 @@ class SchoolAddressController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return string
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        \App\SchoolAddress::create([
+        $data = \App\Models\Schools\SchoolAddress::create([
             'Address1' => $request->get('address1'),
             'Address2' => $request->get('address2'),
             'Postcode' => $request->get('postcode'),
@@ -43,7 +43,7 @@ class SchoolAddressController extends Controller
             'Country' => $request->get('country'),
         ]);
 
-        return "success";
+        return response()->json(array('success' => true, 'id' => $data->id));
     }
 
     /**
