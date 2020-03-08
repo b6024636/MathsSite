@@ -4,6 +4,7 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\School\SchoolAddressController;
 
 class SchoolController extends Controller
 {
@@ -64,15 +65,28 @@ class SchoolController extends Controller
             // $this->save();
         }*/
 
+        $addressRequest = new \Illuminate\Http\Request();
+        $addressRequest->replace([
+            'address1' => $request->get('address1'),
+            'address2' =>  $request->get('address2'),
+            'postcode' =>  $request->get('postcode'),
+            'county' =>  $request->get('county'),
+            'country' =>  $request->get('country'),
+        ]);
+        $schoolAddress = new SchoolAddressController();
+        $address = $schoolAddress->store($addressRequest);
+
+
+
         $imageName = $request->get('logo');
 
-         \App\Models\Schools\School::create([
+        \App\Models\Schools\School::create([
             'Name' => $request->get('name'),
             'Contact_Number' => $request->get('contact'),
-            'Address_id' => '1',
+            'Address_id' => $address,
             'Email' => $request->get('email'),
             'Logo' => isset($imageName) ? $this->getImagePath($imageName) . '/' . $imageName : 'null',
-             'Pending' => true,
+            'Pending' => true,
         ]);
         return redirect('schools/school');
     }
@@ -81,11 +95,23 @@ class SchoolController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show($id)
     {
-        //
+        $school = \App\Models\Schools\School::find($id);
+        $address = \App\Models\Schools\SchoolAddress::find($school->Address_id);
+        $schoolArr = [
+            'Name' => $school->Name,
+            'Contact Number' => $school->Contact_Number,
+            'Email' => $school->Email,
+            'Address Line 1' => $address->Address1,
+            'Address Line 2' => $address->Address2,
+            'Postcode' => $address->Postcode,
+            'County' => $address->County,
+            'Country' => $address->Country
+        ];
+        return view('schools/viewschool', ['school' => $schoolArr]);
     }
 
     /**

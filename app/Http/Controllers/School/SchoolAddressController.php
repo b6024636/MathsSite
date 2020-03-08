@@ -43,6 +43,7 @@ class SchoolAddressController extends Controller
             'Country' => $request->get('country'),
         ]);
 
+        return $data->id;
         return response()->json(array('success' => true, 'id' => $data->id));
     }
 
