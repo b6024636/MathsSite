@@ -64,26 +64,20 @@ class SchoolController extends Controller
             $image->move($destinationPath, $imageName);
             // $this->save();
         }*/
-
-        $addressRequest = new \Illuminate\Http\Request();
-        $addressRequest->replace([
+        $address = \App\Models\Schools\SchoolAddress::create([
             'address1' => $request->get('address1'),
             'address2' =>  $request->get('address2'),
             'postcode' =>  $request->get('postcode'),
             'county' =>  $request->get('county'),
             'country' =>  $request->get('country'),
         ]);
-        $schoolAddress = new SchoolAddressController();
-        $address = $schoolAddress->store($addressRequest);
-
-
 
         $imageName = $request->get('logo');
 
         \App\Models\Schools\School::create([
             'Name' => $request->get('name'),
             'Contact_Number' => $request->get('contact'),
-            'Address_id' => $address,
+            'Address_id' => $address->id,
             'Email' => $request->get('email'),
             'Logo' => isset($imageName) ? $this->getImagePath($imageName) . '/' . $imageName : 'null',
             'Pending' => true,

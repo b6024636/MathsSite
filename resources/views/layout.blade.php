@@ -77,7 +77,7 @@
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="/tasks/task">Tasks</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
@@ -100,11 +100,13 @@
         </div>
     </div>
 </nav>
-<div class="flex-center position-ref full-height">
+<div class="main-container flex-center position-ref full-height">
     <div class="content">
         @yield('content')
     </div>
 </div>
+<div class="footer-block">
+    <p>footer</p>
 </div>
 </body>
 </html>

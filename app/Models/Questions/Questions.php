@@ -15,6 +15,7 @@ class Questions extends Model
         'Optional_Answers',
         'Is_Private',
         'School',
-        'Created_By',
+        'CreatedBy',
+        'Question'
     ];
 }
