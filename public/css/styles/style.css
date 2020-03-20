@@ -76,3 +76,12 @@ body{
     border-radius: 50%;
     background: white;
 }
+.checkbox-createtask .question-container{
+    font-size: 18px;
+    text-align: right;
+}
+.checkbox-createtask{
+    display: flex;
+    justify-content: center;
+    width: 47%;
+}

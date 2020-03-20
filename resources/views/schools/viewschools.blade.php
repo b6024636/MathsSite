@@ -22,7 +22,7 @@
             <td class="inner-table">{{ $school->Email }}</td>
             <td class="inner-table">{{($school->Pending) ? 'True' : 'False'}}</td>
             <td class="inner-table">{{$school->Logo}}</td>
-            <td class="inner-table"><a href="/schools/school/{{$school->id}}">View School</a></td>
+            <td class="inner-table"><a href="/admin/school/{{$school->id}}">View School</a></td>
         </tr>
     @endforeach
     </tbody>

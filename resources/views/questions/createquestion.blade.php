@@ -32,6 +32,10 @@
         </div>
 
         <div class="form-input mc-questions row mb-2">
+            <label class="col-md-6" for="answer">Answer</label> <input class="col-md-6" type="text" name="answer" id="answer">
+        </div>
+
+        <div class="form-input mc-questions row mb-2">
             <label class="col-md-6" for="optional-answers">Optional Answers</label> <input class="col-md-6" type="text" name="optional-answers" id="optional-answers">
         </div>
 
@@ -41,6 +45,9 @@
 
         <div class="form-input row mb-2">
             <label class="col-md-6" for="school">School</label> <input class="col-md-6" type="text" name="school" id="school">
+        </div>
+        <div class="form-input row mb-2">
+            <label class="col-md-6" for="topic">Topic</label> <input class="col-md-6" type="text" name="topic" id="topic">
         </div>
     </div>
 

@@ -7,13 +7,22 @@
     <div class="container-fluid">
         <div class="col-md-12">
             @foreach($school as $key => $value)
-
                 <div class="row">
                     <div class="col-md-6 font-weight-bold">
                         <span>{{$key}}:</span>
                     </div>
                     <div class="col-md-6 ">
-                        <span>{{$value}}</span>
+                        <span>
+                            @if($key == 'Pending')
+                                @if($value == 1)
+                                    True
+                                @else
+                                    False
+                                @endif
+                            @else
+                            {{$value}}
+                            @endif
+                        </span>
                     </div>
                 </div>
 
@@ -22,10 +31,15 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-6">
-            <a href="/schools/school">Back to list</a>
+            <a href="/admin/school">Back to list</a>
         </div>
         <div class="col-md-6">
             <a href="/schools/school">Edit</a>
         </div>
     </div>
+    @auth('admin')
+    @if($school['Pending'])
+        <a class="btn btn-primary text-white">Enable School</a>
+    @endif
+    @endauth
 @endsection

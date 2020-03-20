@@ -31,7 +31,7 @@ class QuestionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function store(Request $request)
     {
@@ -47,9 +47,10 @@ class QuestionController extends Controller
             'Is_Private' => $request->get('is-private') == 'on' ? true : false,
             'School' => $request->get('school'),
             'CreatedBy' => 'Test',
+            'topic' => $request->get('topic'),
         ]);
 
-        return;
+        return view('tasks/task');
     }
 
     /**
@@ -73,6 +74,7 @@ class QuestionController extends Controller
             'is_private' => $question->Is_Private,
             'school' => $question->School,
             'created_by' => $question->CreatedBy,
+            'topic' => $question->topic,
         ];
 
 

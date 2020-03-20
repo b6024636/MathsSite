@@ -5,9 +5,15 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use App\Models\Users\Admin;
+use App\Models\Users\Teachers;
+use App\Models\Users\Students;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use App\Models\Schools\School;
 
 class RegisterController extends Controller
 {
@@ -31,14 +37,18 @@ class RegisterController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    protected $schools;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(School $school)
     {
         $this->middleware('guest');
+        $this->middleware('guest:admin');
+        $this->schools = $school;
     }
 
     /**
@@ -50,10 +60,23 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
+    }
+
+    public function showAdminRegisterForm()
+    {
+        return view('auth.register', ['url' => 'admin']);
+    }
+
+    public function showTeacherRegisterForm()
+    {
+        return view('auth.register', ['url' => 'teacher']);
+    }
+
+    public function showStudentRegisterForm()
+    {
+        return view('auth.register', ['url' => 'student', ]);
     }
 
     /**
@@ -69,5 +92,43 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    protected function createTeacher(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        $teacher = Teachers::create([
+            'name' => $request['name'],
+            'username' => $request['username'],
+            'assigned_school' => $request['assigned-school'],
+            'role' => $request['role'],
+            'password' => Hash::make($request['password']),
+        ]);
+        return redirect()->intended('login/teacher');
+    }
+
+    protected function createAdmin(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        $admin = Admin::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'role' => 'admin',
+            'password' => Hash::make($request['password']),
+        ]);
+        return redirect()->intended('login/admin');
+    }
+
+    protected function createStudent(Request $request)
+    {
+        $user = Auth::user();
+
+        $this->validator($request->all())->validate();
+        $student = Students::create([
+            'student_id' => $request['student-id'],
+            'assigned_school' => 1,//$user->assigned_school,
+            'password' => Hash::make($request['password']),
+        ]);
+        return redirect()->intended('login/student');
     }
 }

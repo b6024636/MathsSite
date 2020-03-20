@@ -34,22 +34,37 @@ class TaskController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
-        //
+        return view('tasks/createtask', ['questions' => $this->getAllQuestions()]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function store(Request $request)
     {
-        //
+//        echo '<pre>';
+//        print_r($request->all());
+//        die();
+
+        $data = $this->tasks::create([
+            'title' => $request->get('title'),
+            'rating' => 0,
+            'marks' => $this->getFullMarksForTask($request->get('questions')),
+            'questions' => implode(',', $request->get('questions')),
+            'is_private' => $request->get('is-private') == 'on' ? true : false,
+            'school' => $request->get('school'),
+            'created_by' => 'Test',
+            'topic' => $request->get('topic'),
+        ]);
+
+        return $this->index();
     }
 
     /**
@@ -98,13 +113,51 @@ class TaskController extends Controller
     }
     public function beginTask($id)
     {
-        return view('tasks/task', ['questions' => $this->getQuestionsForTask($id), 'taskId' => $id]);
+        if($id)
+            return view('tasks/task', ['questions' => $this->getQuestionsForTask($id), 'taskId' => $id, 'task' => $this->getTaskName($id)]);
+        return "no";
     }
     public function getQuestionsForTask($id)
     {
         $task = $this->tasks::find($id);
 
         return $task->questions;
+    }
+
+    public function getAllQuestions()
+    {
+        return $this->question::all();
+    }
+
+    /**
+     * Get total marks of all the questions.
+     *
+     * @param  array  $questionIds
+     * @return integer
+     */
+    private function getFullMarksForTask($questionIds)
+    {
+        $marks = 0;
+        foreach($questionIds as $id)
+        {
+            $question = $this->question::find($id);
+            $marks += $question->Marks;
+        }
+        return $marks;
+    }
+    public function getTaskName($id)
+    {
+        return $this->tasks::find($id)->title;
+    }
+
+    public function finishTask()
+    {
+        die("hi");
+        return $this->respond("no");
+        if($json)
+            return json_encode("test");
+        return false;
+        return json_encode($scores);
     }
 
 }
