@@ -5,9 +5,18 @@ namespace App\Http\Controllers\School;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\School\SchoolAddressController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\AuthManager;
 
 class SchoolController extends Controller
 {
+    protected $authManager;
+
+    public function __construct(AuthManager $authManager)
+    {
+        $this->authManager = $authManager;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -64,26 +73,20 @@ class SchoolController extends Controller
             $image->move($destinationPath, $imageName);
             // $this->save();
         }*/
-
-        $addressRequest = new \Illuminate\Http\Request();
-        $addressRequest->replace([
+        $address = \App\Models\Schools\SchoolAddress::create([
             'address1' => $request->get('address1'),
             'address2' =>  $request->get('address2'),
             'postcode' =>  $request->get('postcode'),
             'county' =>  $request->get('county'),
             'country' =>  $request->get('country'),
         ]);
-        $schoolAddress = new SchoolAddressController();
-        $address = $schoolAddress->store($addressRequest);
-
-
 
         $imageName = $request->get('logo');
 
         \App\Models\Schools\School::create([
             'Name' => $request->get('name'),
             'Contact_Number' => $request->get('contact'),
-            'Address_id' => $address,
+            'Address_id' => $address->id,
             'Email' => $request->get('email'),
             'Logo' => isset($imageName) ? $this->getImagePath($imageName) . '/' . $imageName : 'null',
             'Pending' => true,
@@ -109,7 +112,8 @@ class SchoolController extends Controller
             'Address Line 2' => $address->Address2,
             'Postcode' => $address->Postcode,
             'County' => $address->County,
-            'Country' => $address->Country
+            'Country' => $address->Country,
+            'Pending' => $school->Pending
         ];
         return view('schools/viewschool', ['school' => $schoolArr]);
     }
@@ -151,5 +155,18 @@ class SchoolController extends Controller
     private function getImagePath($imageName)
     {
         return $imageName[0] . '/' . $imageName[1];
+    }
+
+    public function mySchool()
+    {
+//        if(!Auth::guard('teacher')->check() || !Auth::guard('student')->check())
+//            return redirect('/');
+//        $user = $this->authManager->userResolver()->call
+        echo '<pre>';
+        print_r('hello');
+//        print_r($user->id);
+        print_r(Auth::guard('student')->user()->name);
+        die();
+        return view('schools/myschool');
     }
 }

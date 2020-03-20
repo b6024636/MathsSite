@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>Tailored Maths</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -77,7 +77,7 @@
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="/tasks/task">Tasks</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
@@ -85,6 +85,19 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                 </li>
+                @if(Auth::guard('admin')->check() || Auth::guard('teacher')->check() || Auth::guard('student')->check())
+                <li>
+                    <a class="dropdown-item" href="{{ route('logout') }}"
+                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                        {{ __('Logout') }}
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                </li>
+                @endif
                 <!-- Dropdown -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
@@ -100,11 +113,13 @@
         </div>
     </div>
 </nav>
-<div class="flex-center position-ref full-height">
+<div class="main-container flex-center position-ref full-height">
     <div class="content">
         @yield('content')
     </div>
 </div>
+<div class="footer-block">
+    <p>footer</p>
 </div>
 </body>
 </html>

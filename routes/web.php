@@ -21,4 +21,28 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/schooltest', 'SchoolTestController');
 Route::resource('/schools/schooladdress', 'School\SchoolAddressController');
-Route::resource('/schools/school', 'School\SchoolController');
+Route::resource('/admin/school', 'School\SchoolController');
+Route::resource('/questions/question', 'Questions\QuestionController');
+Route::resource('/tasks/task', 'Tasks\TaskController');
+
+
+Route::get('myschool', 'School\SchoolController@mySchool');
+
+Route::get('/tasks/task/begintask/{id}', 'Tasks\TaskController@beginTask')->where('id', '[0-9]+');;
+Route::get('/tasks/task/finishtask', 'Tasks\TaskController@finishTask');
+
+Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
+Route::get('/login/teacher', 'Auth\LoginController@showTeacherLoginForm');
+Route::get('/login/student', 'Auth\LoginController@showStudentLoginForm');
+Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm');
+Route::get('/register/teacher', 'Auth\RegisterController@showTeacherRegisterForm');
+Route::get('/register/student', 'Auth\RegisterController@showStudentRegisterForm');
+
+Route::post('/login/admin', 'Auth\LoginController@adminLogin');
+Route::post('/login/teacher', 'Auth\LoginController@teacherLogin');
+Route::post('/login/student', 'Auth\LoginController@studentLogin');
+Route::post('/register/admin', 'Auth\RegisterController@createAdmin');
+Route::post('/register/teacher', 'Auth\RegisterController@createTeacher');
+Route::post('/register/student', 'Auth\RegisterController@createStudent');
+
+Route::view('/admin', 'admin/admin');

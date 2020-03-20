@@ -9,3 +9,79 @@ nav{
     padding-top: 0;
     padding-bottom: 0;
 }
+.main-container{
+    padding-bottom: 2.5rem;
+}
+.footer-block{
+    position: absolute;
+    height: 2.5rem;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+    color: white;
+}
+body{
+    height:100vh;
+    position: relative;
+}
+.btn.hide{
+    display: none;
+}
+.question-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.question-container input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+}
+.question-container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+.question-container input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.question-container input:checked ~ .checkmark:after {
+    display: block;
+}
+.question-container .checkmark:after {
+    top: 9px;
+    left: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+.checkbox-createtask .question-container{
+    font-size: 18px;
+    text-align: right;
+}
+.checkbox-createtask{
+    display: flex;
+    justify-content: center;
+    width: 47%;
+}

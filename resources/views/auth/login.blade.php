@@ -1,22 +1,33 @@
-@extends('layouts.app')
+@extends('layout')
 
 @section('content')
-<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
+                    @isset($url)
+                        <form method="POST" action='{{ url("login/$url") }}' aria-label="{{ __('Login') }}">
+                    @else
+
+                        <form method="POST" action="{{ route('login') }}">
+                    @endisset
                         @csrf
 
                         <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                            @if($url == 'student')
+                            <label for="student-id" class="col-md-4 col-form-label text-md-right">{{ __('Student Id') }}</label>
+                            @else
+                                <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                            @endif
 
                             <div class="col-md-6">
+                                @if($url == 'student')
+                                    <input id="student-id" type="text" class="form-control @error('student-id') is-invalid @enderror" name="student_id" required autofocus>
+                                @else
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
+                                @endif
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -69,5 +80,4 @@
             </div>
         </div>
     </div>
-</div>
 @endsection
