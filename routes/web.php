@@ -24,6 +24,7 @@ Route::resource('/schools/schooladdress', 'School\SchoolAddressController');
 Route::resource('/admin/school', 'School\SchoolController');
 Route::resource('/questions/question', 'Questions\QuestionController');
 Route::resource('/tasks/task', 'Tasks\TaskController');
+Route::resource('/groups/group', 'Groups\GroupController');
 
 
 Route::get('/myschool', 'School\SchoolController@mySchool');

@@ -8,6 +8,7 @@ use App\Http\Controllers\School\SchoolAddressController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\AuthManager;
 use App\Models\Schools\School;
+use App\Models\Groups\Groups;
 
 class SchoolController extends Controller
 {
@@ -15,10 +16,19 @@ class SchoolController extends Controller
 
     protected $school;
 
-    public function __construct(AuthManager $authManager, School $school)
+    protected $groups;
+
+    /**
+     * SchoolController constructor.
+     * @param AuthManager $authManager
+     * @param School $school
+     * @param Groups $groups
+     */
+    public function __construct(AuthManager $authManager, School $school, Groups $groups)
     {
         $this->authManager = $authManager;
         $this->school = $school;
+        $this->groups = $groups;
     }
 
     /**
@@ -169,17 +179,8 @@ class SchoolController extends Controller
             if (Auth::guard('teacher')->check())
                 $user = Auth::guard('teacher')->user();
             $school = $this->school::find($user->assigned_school);
-//            echo '<pre>';
-//            print_r('hello');
-////        print_r($user->id);
-//            echo '<br/>';
-//            print_r(Auth::guard('student')->user()->student_id);
-//            echo '<br/>';
-//            print_r($user->assigned_school);
-//            echo '<br/>';
-//            print_r($school->Name);
-//            die();
-            return view('schools/myschool', ['school' => $school, 'user' => $user]);
+            $groups = $this->groups::where('assigned_school', '=', $user->assigned_school)->get();
+            return view('schools/myschool', ['school' => $school, 'user' => $user, 'groups' => $groups]);
         }
         return redirect('/');
     }
