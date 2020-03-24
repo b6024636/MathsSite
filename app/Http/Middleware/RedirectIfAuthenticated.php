@@ -22,10 +22,10 @@ class RedirectIfAuthenticated
             return redirect('/admin');
         }
         if ($guard == "teacher" && Auth::guard($guard)->check()) {
-            return redirect('/teacher');
+            return redirect('/myschool');
         }
         if ($guard == "student" && Auth::guard($guard)->check()) {
-            return redirect('/');
+            return redirect('/myschool');
         }
         if (Auth::guard($guard)->check()) {
             return redirect(RouteServiceProvider::HOME);

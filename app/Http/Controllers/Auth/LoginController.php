@@ -70,11 +70,11 @@ class LoginController extends Controller
     public function teacherLogin(Request $request)
     {
         $this->validate($request, [
-            'email'   => 'required|email',
+//            'username'   => 'required|username',
             'password' => 'required|min:6'
         ]);
 
-        if (Auth::guard('teacher')->attempt(['email' => $request->username, 'password' => $request->password], $request->get('remember'))) {
+        if (Auth::guard('teacher')->attempt(['username' => $request->username, 'password' => $request->password], $request->get('remember'))) {
 
             return redirect()->intended('/teacher');
         }

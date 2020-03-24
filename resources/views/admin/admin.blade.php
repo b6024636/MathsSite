@@ -38,6 +38,7 @@
     </div>
     @endauth
     @if(!Auth::guard('admin')->check())
+
         <script>
             window.location.href('/login/admin');
         </script>
