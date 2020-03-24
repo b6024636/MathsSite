@@ -26,7 +26,7 @@ Route::resource('/questions/question', 'Questions\QuestionController');
 Route::resource('/tasks/task', 'Tasks\TaskController');
 
 
-Route::get('myschool', 'School\SchoolController@mySchool');
+Route::get('/myschool', 'School\SchoolController@mySchool');
 
 Route::get('/tasks/task/begintask/{id}', 'Tasks\TaskController@beginTask')->where('id', '[0-9]+');;
 Route::get('/tasks/task/finishtask', 'Tasks\TaskController@finishTask');

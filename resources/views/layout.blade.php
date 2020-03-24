@@ -9,12 +9,12 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
-    {{ HTML::script('js/jquery.js') }}
-    {{ HTML::script('js/bootstrap.js') }}
-    {{ HTML::style('css/styles/style.css') }}
-    {{ HTML::style('css/bootstrap.css') }}
+{{ HTML::script('js/jquery.js') }}
+{{ HTML::script('js/bootstrap.js') }}
+{{ HTML::style('css/styles/style.css') }}
+{{ HTML::style('css/bootstrap.css') }}
 
-    <!-- Styles -->
+<!-- Styles -->
     <style>
         html, body {
             background-color: #fff;
@@ -86,29 +86,37 @@
                     <a class="nav-link" href="#">Link</a>
                 </li>
                 @if(Auth::guard('admin')->check() || Auth::guard('teacher')->check() || Auth::guard('student')->check())
-                <li>
-                    <a class="dropdown-item" href="{{ route('logout') }}"
-                       onclick="event.preventDefault();
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                        {{ __('Logout') }}
-                    </a>
+                            {{ __('Logout') }}
+                        </a>
 
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                </li>
-                @endif
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login/student">
+                            Login
+                        </a>
+                    </li>
+            @endif
+            @if(Auth::guard('teacher')->check() || Auth::guard('student')->check())
                 <!-- Dropdown -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                        Dropdown link
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Link 1</a>
-                        <a class="dropdown-item" href="#">Link 2</a>
-                        <a class="dropdown-item" href="#">Link 3</a>
-                    </div>
-                </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                            My School
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/myschool">View</a>
+                            <a class="dropdown-item" href="#">Link 2</a>
+                            <a class="dropdown-item" href="#">Link 3</a>
+                        </div>
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

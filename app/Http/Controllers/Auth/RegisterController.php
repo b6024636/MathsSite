@@ -100,8 +100,8 @@ class RegisterController extends Controller
         $teacher = Teachers::create([
             'name' => $request['name'],
             'username' => $request['username'],
-            'assigned_school' => $request['assigned-school'],
-            'role' => $request['role'],
+            'assigned_school' => 1,
+            'role' => 'teacher',
             'password' => Hash::make($request['password']),
         ]);
         return redirect()->intended('login/teacher');

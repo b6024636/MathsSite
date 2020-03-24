@@ -7,14 +7,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\School\SchoolAddressController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\AuthManager;
+use App\Models\Schools\School;
 
 class SchoolController extends Controller
 {
     protected $authManager;
 
-    public function __construct(AuthManager $authManager)
+    protected $school;
+
+    public function __construct(AuthManager $authManager, School $school)
     {
         $this->authManager = $authManager;
+        $this->school = $school;
     }
 
     /**
@@ -159,14 +163,24 @@ class SchoolController extends Controller
 
     public function mySchool()
     {
-//        if(!Auth::guard('teacher')->check() || !Auth::guard('student')->check())
-//            return redirect('/');
-//        $user = $this->authManager->userResolver()->call
-        echo '<pre>';
-        print_r('hello');
-//        print_r($user->id);
-        print_r(Auth::guard('student')->user()->name);
-        die();
-        return view('schools/myschool');
+        if(Auth::guard('student')->check() || Auth::guard('teacher')->check()) {
+            if (Auth::guard('student')->check())
+                $user = Auth::guard('student')->user();
+            if (Auth::guard('teacher')->check())
+                $user = Auth::guard('teacher')->user();
+            $school = $this->school::find($user->assigned_school);
+//            echo '<pre>';
+//            print_r('hello');
+////        print_r($user->id);
+//            echo '<br/>';
+//            print_r(Auth::guard('student')->user()->student_id);
+//            echo '<br/>';
+//            print_r($user->assigned_school);
+//            echo '<br/>';
+//            print_r($school->Name);
+//            die();
+            return view('schools/myschool', ['school' => $school, 'user' => $user]);
+        }
+        return redirect('/');
     }
 }
