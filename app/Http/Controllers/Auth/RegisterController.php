@@ -102,6 +102,7 @@ class RegisterController extends Controller
             'username' => $request['username'],
             'assigned_school' => 1,
             'role' => 'teacher',
+            'assigned_groups' => ',',
             'password' => Hash::make($request['password']),
         ]);
         return redirect()->intended('login/teacher');
@@ -127,6 +128,7 @@ class RegisterController extends Controller
         $student = Students::create([
             'student_id' => $request['student-id'],
             'assigned_school' => 1,//$user->assigned_school,
+            'assigned_groups' => ',',
             'password' => Hash::make($request['password']),
         ]);
         return redirect()->intended('login/student');

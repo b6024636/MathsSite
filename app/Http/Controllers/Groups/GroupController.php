@@ -9,6 +9,7 @@ use App\Models\Groups\Groups;
 use App\Models\Users\Teachers;
 use App\Models\Users\Students;
 use App\Models\Tasks\Tasks;
+use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
 {
@@ -78,8 +79,8 @@ class GroupController extends Controller
 
         $school = Auth::guard('teacher')->user()->assigned_school;
         $this->group::create([
-           'code' => $request->code,
-           'assigned_school' =>  $school
+            'code' => $request->code,
+            'assigned_school' =>  $school
         ]);
 
         return redirect('/myschool');
@@ -100,8 +101,22 @@ class GroupController extends Controller
         $group = $this->group::find($id);
         if($group->assigned_school != Auth::guard('teacher')->user()->assigned_school)
             return redirect('/');
-        $students = $this->students::where('assigned_groups', '=', $id)->get();
-        $teachers = $this->teachers::where('assigned_groups', '=', $id)->get();
+        $students = $this->students::where([
+            ['assigned_groups', 'LIKE', '%,' . $id . ',%'],
+            ['assigned_school', '=', Auth::guard('teacher')->user()->assigned_school]
+        ])->get();
+        $teachers = $this->teachers::where([
+            ['assigned_groups', 'LIKE', '%,' . $id . ',%'],
+            ['assigned_school', '=', Auth::guard('teacher')->user()->assigned_school]
+        ])->get();
+        $schoolStudents = $this->students::where([
+            ['assigned_school', '=', Auth::guard('teacher')->user()->assigned_school],
+            ['assigned_groups', 'NOT LIKE', '%,' . $id . ',%']
+        ])->get();
+        $schoolTeachers = $this->teachers::where([
+            ['assigned_school', '=', Auth::guard('teacher')->user()->assigned_school],
+            ['assigned_groups', 'NOT LIKE', '%,' . $id . ',%']
+        ])->get();
         $tasks = [];
         if($group->assigned_tasks){
             foreach(explode(',', $group->assigned_tasks) as $taskId)
@@ -110,7 +125,13 @@ class GroupController extends Controller
             }
         }
 
-        return view('schools/viewgroup', ['group' => $group,'students' => $students,'teachers' => $teachers,'tasks' => $tasks,]);
+        return view('schools/viewgroup', [
+            'group' => $group,
+            'students' => $students,
+            'teachers' => $teachers,
+            'tasks' => $tasks,
+            'schoolStudents' => $schoolStudents,
+            'schoolTeachers' => $schoolTeachers]);
     }
 
     /**
@@ -146,4 +167,58 @@ class GroupController extends Controller
     {
         //
     }
+
+    public function addUserToGroup(Request $request)
+    {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+        if($request->user == 'student')
+        {
+            foreach($request->students as $studentId)
+            {
+                $student = $this->students::find($studentId);
+                if(!in_array($request->group_id, explode(',', $student->assigned_groups)))
+                    $student->update(['assigned_groups' => $student->assigned_groups . $request->group_id . ',']);
+
+            }
+        }
+        else{
+            foreach($request->teachers as $teacherId)
+            {
+                $teacher = $this->teachers::find($teacherId);
+                if(!in_array($request->group_id, explode(',', $teacher->assigned_groups)))
+                    $teacher->update(['assigned_groups' => $teacher->assigned_groups . $request->group_id . ',']);
+
+            }
+        }
+        return redirect('groups/group/'.$request->group_id);
+    }
+
+
+    public function removeUserFromGroup(Request $request)
+    {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+        if($request->user == 'student')
+        {
+            $student = $this->students::find($request->student_id);
+            if(in_array($request->group_id, $groups = explode(',', $student->assigned_groups)))
+            {
+                $key = array_search($request->group_id, $groups);
+                unset($groups[$key]);
+                $student->update(['assigned_groups' => ',' . implode(',', $groups)]);
+            }
+        }
+        else{
+            $teacher = $this->teachers::find($request->teacher_id);
+            if(in_array($request->group_id, $groups = explode(',', $teacher->assigned_groups)))
+            {
+                $key = array_search($request->group_id, $groups);
+                unset($groups[$key]);
+                $teacher->update(['assigned_groups' => ',' . implode(',', $groups)]);
+            }
+        }
+        return redirect('groups/group/'.$request->group_id);
+    }
+
 }

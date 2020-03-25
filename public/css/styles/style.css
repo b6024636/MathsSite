@@ -90,16 +90,33 @@ body{
     width: 47%;
 }
 .view-group-container.col-md-10{
-    border: 1px solid darkgrey;
-    padding-top: 6px;
+    /*border: 1px solid darkgrey;*/
+    /*padding-top: 6px;*/
     padding-bottom: 6px;
 }
 .view-group-container .row:nth-child(even){
-    background-color: #e8e7e7;
+    background-color: #eeeded;
 }
 .create-group-container .form-submit .btn{
     font-size: 12px;
 }
 .create-group-container .code input{
     width:100%;
+}
+.content{
+    width: 100%;
+}
+.card-body-tm{
+    transition: 200ms ease-in-out;
+    transform: rotateX(0deg);
+    transform-origin: top;
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.rotate-back{
+    transform: rotateX(-90deg);
+}
+.btn-link{
+    cursor: pointer;
 }

@@ -126,8 +126,9 @@
         @yield('content')
     </div>
 </div>
-<div class="footer-block">
-    <p>footer</p>
-</div>
+{{--<div class="footer-block mt-4">--}}
+{{--    <p>footer</p>--}}
+{{--</div>--}}
+{{ HTML::script('js/maths/school.js') }}
 </body>
 </html>
