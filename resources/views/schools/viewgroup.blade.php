@@ -45,8 +45,23 @@
                     <div class="row card-header">
                         <h2>Set Work</h2>
                     </div>
+                    @foreach($tasks as $task)
+                        <div class="row p-2">
+                            <div class="col-md-6">
+                                <p>{{$task->title}}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="#">View Results</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="#">Remove</a>
+                            </div>
+                        </div>
+                    @endforeach
                     <div class="row p-2">
-                        <a href="#">Example</a>
+                        <div class="col-md-12">
+                            <button type="button" data-toggle="modal" data-target="#task-modal" class="float-right btn btn-primary mb-1" id="add-work">Add work to group</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,6 +146,29 @@
                 @endforeach
                 {{ Form::submit('Add staff(s)', array('class' => 'btn btn-primary float-right mb-2 mt-2')) }}
                 {{ Form::close()  }}
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="task-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between">
+                    <h2 class="modal-title">Add a task for the group</h2>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="topics-body">
+                    @foreach($availableTasks as $topic)
+                        <div class="row p-2 topic-row">
+                            <a href="#" class="topic-link" data-title="{{$topic['title']}}">{{$topic['title']}} &raquo;</a>
+                            <div class="hide topic-tasks">
+                                {{json_encode($topic['tasks'])}}
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="modal-body hide" id="tasks-body">
+
+                </div>
             </div>
         </div>
     </div>

@@ -94,7 +94,7 @@ body{
     /*padding-top: 6px;*/
     padding-bottom: 6px;
 }
-.view-group-container .row:nth-child(even){
+.view-group-container .row:nth-child(even), .modal-body .row:nth-child(even){
     background-color: #eeeded;
 }
 .create-group-container .form-submit .btn{
@@ -119,4 +119,13 @@ body{
 }
 .btn-link{
     cursor: pointer;
+}
+.content .modal .modal-body{
+    /*padding: 2rem 1rem;*/
+    overflow-y: auto;
+    background-color: white;
+}
+.modal-content{
+    max-height: 75vh;
+    padding-bottom: 1rem;
 }

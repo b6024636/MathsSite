@@ -9,6 +9,7 @@ use App\Models\Groups\Groups;
 use App\Models\Users\Teachers;
 use App\Models\Users\Students;
 use App\Models\Tasks\Tasks;
+use App\Models\Topics\Topics;
 use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
@@ -29,6 +30,10 @@ class GroupController extends Controller
      * @var Tasks
      */
     private $tasks;
+    /**
+     * @var Topics
+     */
+    private $topics;
 
     /**
      * GroupController constructor.
@@ -36,13 +41,15 @@ class GroupController extends Controller
      * @param Teachers $teachers
      * @param Students $students
      * @param Tasks $tasks
+     * @param Topics $topics
      */
-    public function __construct(Groups $group, Teachers $teachers, Students $students, Tasks $tasks)
+    public function __construct(Groups $group, Teachers $teachers, Students $students, Tasks $tasks, Topics $topics)
     {
         $this->group = $group;
         $this->teachers = $teachers;
         $this->students = $students;
         $this->tasks = $tasks;
+        $this->topics = $topics;
     }
 
 
@@ -124,14 +131,37 @@ class GroupController extends Controller
                 $tasks[] = $this->tasks::find($taskId);
             }
         }
+        $availableTasks = $this->tasks::whereNotIn('id', explode(',', $group->assigned_tasks))->get();
 
+        $topics = $this->topics::orderBy('title', 'asc')->get();
+
+        $tasksArray = [];
+        foreach ($topics as $topic)
+        {
+            $tasksArray[$topic->id] = [
+                'id' => $topic->id,
+                'title' => $topic->title,
+                'tasks' => []
+            ];
+        }
+        foreach ($availableTasks as $availableTask)
+        {
+            $tasksArray[$availableTask->topic]['tasks'][] = [
+                'id' => $availableTask->id,
+                'title' => $availableTask->title,
+                'marks' =>$availableTask->marks,
+                'rating' => $availableTask->rating
+            ];
+        }
         return view('schools/viewgroup', [
             'group' => $group,
             'students' => $students,
             'teachers' => $teachers,
             'tasks' => $tasks,
             'schoolStudents' => $schoolStudents,
-            'schoolTeachers' => $schoolTeachers]);
+            'schoolTeachers' => $schoolTeachers,
+            'availableTasks' => $tasksArray,
+            ]);
     }
 
     /**
@@ -168,33 +198,39 @@ class GroupController extends Controller
         //
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function addUserToGroup(Request $request)
     {
         if(!Auth::guard('teacher')->check())
             return redirect('/');
-        if($request->user == 'student')
-        {
-            foreach($request->students as $studentId)
-            {
-                $student = $this->students::find($studentId);
-                if(!in_array($request->group_id, explode(',', $student->assigned_groups)))
-                    $student->update(['assigned_groups' => $student->assigned_groups . $request->group_id . ',']);
+        if($request->students || $request->teachers) {
+            if ($request->user == 'student') {
+                foreach ($request->students as $studentId) {
+                    $student = $this->students::find($studentId);
+                    if (!in_array($request->group_id, explode(',', $student->assigned_groups)))
+                        $student->update(['assigned_groups' => $student->assigned_groups . $request->group_id . ',']);
 
-            }
-        }
-        else{
-            foreach($request->teachers as $teacherId)
-            {
-                $teacher = $this->teachers::find($teacherId);
-                if(!in_array($request->group_id, explode(',', $teacher->assigned_groups)))
-                    $teacher->update(['assigned_groups' => $teacher->assigned_groups . $request->group_id . ',']);
+                }
+            } else {
+                foreach ($request->teachers as $teacherId) {
+                    $teacher = $this->teachers::find($teacherId);
+                    if (!in_array($request->group_id, explode(',', $teacher->assigned_groups)))
+                        $teacher->update(['assigned_groups' => $teacher->assigned_groups . $request->group_id . ',']);
 
+                }
             }
         }
         return redirect('groups/group/'.$request->group_id);
     }
 
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function removeUserFromGroup(Request $request)
     {
         if(!Auth::guard('teacher')->check())
