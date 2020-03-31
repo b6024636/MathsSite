@@ -49,5 +49,7 @@ Route::post('/register/student', 'Auth\RegisterController@createStudent');
 
 Route::post('/groups/adduser', 'Groups\GroupController@addUserToGroup');
 Route::post('/groups/removeuser', 'Groups\GroupController@removeUserFromGroup');
+Route::post('/groups/addwork', 'Groups\GroupController@addWorkToGroup');
+Route::post('/groups/removework', 'Groups\GroupController@removeWorkFromGroup');
 
 Route::view('/admin', 'admin/admin');

@@ -233,8 +233,7 @@ class GroupController extends Controller
      */
     public function removeUserFromGroup(Request $request)
     {
-        if(!Auth::guard('teacher')->check())
-            return redirect('/');
+
         if($request->user == 'student')
         {
             $student = $this->students::find($request->student_id);
@@ -242,7 +241,7 @@ class GroupController extends Controller
             {
                 $key = array_search($request->group_id, $groups);
                 unset($groups[$key]);
-                $student->update(['assigned_groups' => ',' . implode(',', $groups)]);
+                $student->update(['assigned_groups' => implode(',', $groups)]);
             }
         }
         else{
@@ -251,10 +250,50 @@ class GroupController extends Controller
             {
                 $key = array_search($request->group_id, $groups);
                 unset($groups[$key]);
-                $teacher->update(['assigned_groups' => ',' . implode(',', $groups)]);
+                $teacher->update(['assigned_groups' => implode(',', $groups)]);
             }
         }
         return redirect('groups/group/'.$request->group_id);
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function addWorkToGroup(Request $request)
+    {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+        $group = $this->group::find($request->group_id);
+        $group->update(['assigned_tasks' => $group->assigned_tasks . ',' . $request->task_id]);
+        return redirect('groups/group/'.$request->group_id);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function removeWorkFromGroup(Request $request)
+    {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+        $group = $this->group::find($request->group_id);
+        if(in_array($request->task_id, $tasks = explode(',', $group->assigned_tasks)))
+        {
+            $key = array_search($request->task_id, $tasks);
+            unset($tasks[$key]);
+            $group->update(['assigned_tasks' => implode(',', $tasks)]);
+        }
+
+        return redirect('groups/group/'.$request->group_id);
+    }
+
+    private function getUser()
+    {
+        if(Auth::guard('teacher')->check())
+            return Auth::guard('teacher')->user();
+        if(Auth::guard('student')->check())
+            return Auth::guard('student')->user();
+        return '';
     }
 
 }

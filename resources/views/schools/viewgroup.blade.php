@@ -54,7 +54,11 @@
                                 <a href="#">View Results</a>
                             </div>
                             <div class="col-md-3">
-                                <a href="#">Remove</a>
+                                {{ Form::open(array('url' => 'groups/removework')) }}
+                                <input type="hidden" name="task_id" value="{{$task->id}}">
+                                <input type="hidden" name="group_id" value="{{$group->id}}">
+                                {{ Form::submit("Remove", array("class" => "btn btn-link p-0 width-100")) }}
+                                {{ Form::close()  }}
                             </div>
                         </div>
                     @endforeach
@@ -166,10 +170,75 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="modal-body hide" id="tasks-body">
+                <div class="modal-body hide " id="tasks-body">
 
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        $('.topic-link').click(function(){
+            event.preventDefault();
+            let $row = $(this).closest('.topic-row'),
+                $title = $(this).attr('data-title'),
+                $tasks = JSON.parse($row.find('.topic-tasks:first').html());
+            console.log($tasks);
+
+
+            let $html = '<a href="#" id="topic-back">&laquo Back to topics</a>';
+
+            if($tasks != '[]') {
+                $html += '<div class="row p-2 task-row font-weight-bold">' +
+                    '<div class="col-md-4">' +
+                    '<p>Title</p>' +
+                    '</div>' +
+                    '<div class="col-md-3">' +
+                    '<p>Marks</p>' +
+                    '</div>' +
+                    '<div class="col-md-3">' +
+                    '<p>Rating</p>' +
+                    '</div>' +
+                    '<div class="col-md-2">' +
+                    '<p></p>' +
+                    '</div>' +
+                    '</div>';
+                for (var k in $tasks) {
+                    $html += '' +
+                        '<div class="row p-2 task-row">' +
+                        '<div class="col-md-4">' +
+                        '<p>' + $tasks[k].title + '</p>' +
+                        '</div>' +
+                        '<div class="col-md-3">' +
+                        '<p>' + $tasks[k].marks + '</p>' +
+                        '</div>' +
+                        '<div class="col-md-3">' +
+                        '<p>' + $tasks[k].rating + '</p>' +
+                        '</div>' +
+                        '<div class="col-md-2">' +
+                        ' {{ Form::open(array("url" => "groups/addwork")) }}' +
+                        '<input type="hidden" value="'+ $tasks[k].id +'" name="task_id">' +
+                        '<input type="hidden" value="{{$group->id}}" name="group_id">' +
+                        '{{ Form::submit("Add", array("class" => "btn btn-link p-0 width-100")) }}\n' +
+                        '{{ Form::close()  }}' +
+                        '</div>' +
+                        '</div>';
+                }
+            }else{
+                $html += '<div class="row p-2 task-row font-weight-bold">' +
+                    '<p>N/A</p>' +
+                    '</div>'
+            }
+            $('#tasks-body').html($html);
+            $('#topics-body').hide();
+            $('#tasks-body').show();
+            $('.modal-title').html($title);
+            $('#topic-back').click(function(){
+                event.preventDefault();
+                $('#tasks-body').hide();
+                $('#tasks-body').html('');
+                $('.modal-title').html('Add a task for the group');
+                $('#topics-body').show();
+            })
+        });
+    </script>
 @endsection

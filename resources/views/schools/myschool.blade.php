@@ -39,9 +39,9 @@
                             @foreach($groups as $group)
                                 <div class="row ">
                                     <div class="col-md-7">
-                                <span>
-                                    {{$group->code}}
-                                </span>
+                                        <span>
+                                            {{$group->code}}
+                                        </span>
                                     </div>
                                     <div class="col-md-5">
                                         <a href="/groups/group/{{$group->id}}">View</a>
@@ -62,5 +62,24 @@
     @endauth
     @auth('student')
         <p>Hello, {{$user->student_id}}</p>
+        <div id="view-group-container" class="card">
+            <div class="card-header">
+                <h3>My Work</h3>
+            </div>
+            <div class="card-body view-group-container">
+                @foreach($tasks as $task)
+                    <div class="row ">
+                        <div class="col-md-7">
+                        <span>
+                           {{$task->title}}
+                        </span>
+                        </div>
+                        <div class="col-md-5">
+                            <a href="/tasks/task/begintask/{{$task->id}}">Attempt task</a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
     @endauth
 @endsection

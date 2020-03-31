@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\AuthManager;
 use App\Models\Schools\School;
 use App\Models\Groups\Groups;
+use App\Models\Tasks\Tasks;
 
 class SchoolController extends Controller
 {
@@ -17,18 +18,24 @@ class SchoolController extends Controller
     protected $school;
 
     protected $groups;
+    /**
+     * @var Tasks
+     */
+    private $tasks;
 
     /**
      * SchoolController constructor.
      * @param AuthManager $authManager
      * @param School $school
      * @param Groups $groups
+     * @param Tasks $tasks
      */
-    public function __construct(AuthManager $authManager, School $school, Groups $groups)
+    public function __construct(AuthManager $authManager, School $school, Groups $groups, Tasks $tasks)
     {
         $this->authManager = $authManager;
         $this->school = $school;
         $this->groups = $groups;
+        $this->tasks = $tasks;
     }
 
     /**
@@ -180,7 +187,23 @@ class SchoolController extends Controller
                 $user = Auth::guard('teacher')->user();
             $school = $this->school::find($user->assigned_school);
             $groups = $this->groups::where('assigned_school', '=', $user->assigned_school)->get();
-            return view('schools/myschool', ['school' => $school, 'user' => $user, 'groups' => $groups]);
+            $tasks = [];
+            if(Auth::guard('student')->check())
+            {
+                foreach (explode(',', $user->assigned_groups) as $group_id)
+                {
+                    if(!$group_id)
+                       continue;
+                    $group = $this->groups::find($group_id);
+                    foreach(explode(',', $group->assigned_tasks) as $task_id)
+                    {
+                        if(!$task_id)
+                            continue;
+                        $tasks[] = $this->tasks::find($task_id);
+                    }
+                }
+            }
+            return view('schools/myschool', ['school' => $school, 'user' => $user, 'groups' => $groups, 'tasks' => $tasks]);
         }
         return redirect('/');
     }
