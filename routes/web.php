@@ -24,12 +24,14 @@ Route::resource('/schools/schooladdress', 'School\SchoolAddressController');
 Route::resource('/admin/school', 'School\SchoolController');
 Route::resource('/questions/question', 'Questions\QuestionController');
 Route::resource('/tasks/task', 'Tasks\TaskController');
+Route::resource('/groups/group', 'Groups\GroupController');
 
 
 Route::get('/myschool', 'School\SchoolController@mySchool');
 
 Route::get('/tasks/task/begintask/{id}', 'Tasks\TaskController@beginTask')->where('id', '[0-9]+');;
 Route::get('/tasks/task/finishtask', 'Tasks\TaskController@finishTask');
+Route::post('/tasks/task/finishtask', 'Tasks\TaskController@finishTask');
 
 Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
 Route::get('/login/teacher', 'Auth\LoginController@showTeacherLoginForm');
@@ -44,5 +46,10 @@ Route::post('/login/student', 'Auth\LoginController@studentLogin');
 Route::post('/register/admin', 'Auth\RegisterController@createAdmin');
 Route::post('/register/teacher', 'Auth\RegisterController@createTeacher');
 Route::post('/register/student', 'Auth\RegisterController@createStudent');
+
+Route::post('/groups/adduser', 'Groups\GroupController@addUserToGroup');
+Route::post('/groups/removeuser', 'Groups\GroupController@removeUserFromGroup');
+Route::post('/groups/addwork', 'Groups\GroupController@addWorkToGroup');
+Route::post('/groups/removework', 'Groups\GroupController@removeWorkFromGroup');
 
 Route::view('/admin', 'admin/admin');

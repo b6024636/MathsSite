@@ -41,7 +41,7 @@
             top: 18px;
         }
         .content {
-            text-align: center;
+            /*text-align: center;*/
         }
         .title {
             font-size: 84px;
@@ -121,13 +121,14 @@
         </div>
     </div>
 </nav>
-<div class="main-container flex-center position-ref full-height">
+<div class="main-container d-flex position-ref full-height">
     <div class="content">
         @yield('content')
     </div>
 </div>
-<div class="footer-block">
-    <p>footer</p>
-</div>
+{{--<div class="footer-block mt-4">--}}
+{{--    <p>footer</p>--}}
+{{--</div>--}}
+{{ HTML::script('js/maths/school.js') }}
 </body>
 </html>
