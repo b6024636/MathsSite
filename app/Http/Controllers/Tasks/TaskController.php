@@ -6,17 +6,31 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Questions\Questions;
 use App\Models\Tasks\Tasks;
+use App\Models\Tasks\TaskCompleted;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Console\Input\Input;
 
 class TaskController extends Controller
 {
     private $question;
 
     private $tasks;
+    /**
+     * @var TaskCompleted
+     */
+    private $taskCompleted;
 
-    public function __construct( Questions $question, Tasks $tasks )
+    /**
+     * TaskController constructor.
+     * @param Questions $question
+     * @param Tasks $tasks
+     * @param TaskCompleted $taskCompleted
+     */
+    public function __construct(Questions $question, Tasks $tasks, TaskCompleted $taskCompleted )
     {
         $this->question = $question;
         $this->tasks = $tasks;
+        $this->taskCompleted = $taskCompleted;
     }
 
     /**
@@ -49,10 +63,6 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-//        echo '<pre>';
-//        print_r($request->all());
-//        die();
-
         $data = $this->tasks::create([
             'title' => $request->get('title'),
             'rating' => 0,
@@ -115,7 +125,7 @@ class TaskController extends Controller
     {
         if($id)
             return view('tasks/task', ['questions' => $this->getQuestionsForTask($id), 'taskId' => $id, 'task' => $this->getTaskName($id)]);
-        return "no";
+        return redirect("/");
     }
     public function getQuestionsForTask($id)
     {
@@ -150,9 +160,56 @@ class TaskController extends Controller
         return $this->tasks::find($id)->title;
     }
 
-    public function finishTask()
+    public function finishTask(Request $request)
     {
-        die("hi");
+        $user = 'regular';
+        $_request = json_decode($request->scores);
+        $count = 1;
+        $total = 0;
+        $marksPerQuestion = [];
+        $taskId = 0;
+        foreach($_request as $_response)
+        {
+            $response = get_object_vars($_response);
+            if(isset($response['taskId']))
+            {
+                $taskId = $response['taskId'];
+                continue;
+            }
+
+            $marksPerQuestion[] = implode('..', [
+                'questionNumber' => $count,
+                'marks' => $response['marks']
+            ]);
+            $total += $response['marks'];
+            $count++;
+        }
+//        print_r($marksPerQuestion);
+//        die();
+
+        if(Auth::guard('student')->check())
+        {
+            $this->taskCompleted::create([
+                'student_id' => Auth::guard('student')->user()->student_id,
+                'task_id' => $taskId,
+                'marks_per_question' => implode(',', $marksPerQuestion),
+                'total_marks_earned' => $total
+            ]);
+            $user = 'student';
+        }
+
+
+        $marksAvailable = $this->tasks::find($taskId)->marks;
+
+        $response = [
+            'total' => $total,
+            'marksAvailable' => $marksAvailable,
+            'percent' => number_format(($total/$marksAvailable) * 100, 0),
+            'user' => $user,
+        ];
+        return json_encode($response);
+
+
         return $this->respond("no");
         if($json)
             return json_encode("test");
