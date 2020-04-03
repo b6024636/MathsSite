@@ -8,7 +8,10 @@ use App\Models\Questions\Questions;
 use App\Models\Tasks\Tasks;
 use App\Models\Tasks\TaskCompleted;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\Input;
+use App\Models\Users\Students;
+use App\Models\Groups\Groups;
 
 class TaskController extends Controller
 {
@@ -19,18 +22,36 @@ class TaskController extends Controller
      * @var TaskCompleted
      */
     private $taskCompleted;
+    /**
+     * @var Students
+     */
+    private $students;
+    /**
+     * @var Groups
+     */
+    private $groups;
 
     /**
      * TaskController constructor.
      * @param Questions $question
      * @param Tasks $tasks
      * @param TaskCompleted $taskCompleted
+     * @param Students $students
+     * @param Groups $groups
      */
-    public function __construct(Questions $question, Tasks $tasks, TaskCompleted $taskCompleted )
+    public function __construct(
+        Questions $question,
+        Tasks $tasks,
+        TaskCompleted $taskCompleted,
+        Students $students,
+        Groups $groups
+    )
     {
         $this->question = $question;
         $this->tasks = $tasks;
         $this->taskCompleted = $taskCompleted;
+        $this->students = $students;
+        $this->groups = $groups;
     }
 
     /**
@@ -184,8 +205,6 @@ class TaskController extends Controller
             $total += $response['marks'];
             $count++;
         }
-//        print_r($marksPerQuestion);
-//        die();
 
         if(Auth::guard('student')->check())
         {
@@ -208,13 +227,99 @@ class TaskController extends Controller
             'user' => $user,
         ];
         return json_encode($response);
+    }
 
+    public function getCompletedTasksByUser(Request $request)
+    {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+        $teacher = Auth::guard('teacher')->user();
+        $student = $this->students::find($request->student_id);
+        $group = $this->groups::find($request->group_id);
+        if($teacher->assigned_school != $student->assigned_school)
+            return redirect('/');
 
-        return $this->respond("no");
-        if($json)
-            return json_encode("test");
-        return false;
-        return json_encode($scores);
+        $taskData = [];
+
+        foreach (explode(',', $group->assigned_tasks) as $taskId)
+        {
+            $taskData['assigned_tasks'][$taskId]['assigned'] = $this->tasks::find($taskId);
+        }
+
+        $completedTasks = $this->taskCompleted->where([
+            ['student_id', '=', $student->student_id]
+        ])->get();
+
+        foreach ($completedTasks as $task)
+        {
+            if(array_key_exists($task->task_id, $taskData['assigned_tasks']))
+            {
+                $_task = $this->taskCompleted::orderBy('created_at', 'desc')->where([
+                    ['student_id', '=', $student->student_id],
+                    ['task_id', '=', $task->task_id]
+                ])->first();
+
+                $attempts = DB::table('taskcompleted')->where([['student_id', $student->student_id], ['task_id', $task->task_id]])->count();
+                $taskData['assigned_tasks'][$task->task_id]['completed'] = $_task;
+                $taskData['assigned_tasks'][$task->task_id]['completed']['attempts'] = $attempts;
+
+            }
+        }
+        $taskData['code']['code'] = $group->code;
+        $taskData['student'] = $student;
+
+        return view('schools/viewcompletedtasks', ['data' => $taskData]);
+    }
+
+    public function getCompletedTasksByGroup(Request $request)
+    {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+        $teacher = Auth::guard('teacher')->user();
+        $group = $this->groups::find($request->group_id);
+        $task = $this->tasks::find($request->task_id);
+        if($teacher->assigned_school != $group->assigned_school)
+            return redirect('/');
+
+        $taskData = [];
+
+        $studentListFetch = $this->students::select('student_id')->where('assigned_groups', 'LIKE', '%,' . $group->id . ',%')->get();
+        $studentList = [];
+        foreach ($studentListFetch as $studentId)
+            $studentList[] = $studentId->student_id;
+
+        foreach($studentList as $studentId) {
+            $studentsCompletedTasks = $this->taskCompleted::orderBy('created_at', 'desc')->where([
+                ['task_id', '=', $task->id],
+                ['student_id', '=', $studentId]
+            ])->first();
+            if(!is_null($studentsCompletedTasks))
+            {
+                $attempts = DB::table('taskcompleted')->where([['student_id', $studentId], ['task_id', $task->id]])->count();
+                $taskData['studentTask'][] = [
+                    'studentId' => $studentId,
+                    'completedTask' => $studentsCompletedTasks,
+                    'completed' => true,
+                    'attempts' => $attempts
+                ];
+            }else{
+                $taskData['studentTask'][] = [
+                    'studentId' => $studentId,
+                    'completed' => false
+                ];
+            }
+        }
+        $taskData['details'] = [
+            'task' => $task,
+            'group' => $group
+        ];
+
+        if(!isset($taskData['studentTask']))
+            $taskData['studentTask'] = '';
+//        print_r($taskData);
+//        die();
+
+        return view('schools/viewcompletedgrouptasks', ['data' => $taskData]);
     }
 
 }

@@ -21,7 +21,11 @@
                                 <p>{{$student->student_id}}</p>
                             </div>
                             <div class="col-md-3">
-                                <a href="#">Check work</a>
+                                {{ Form::open(array('url' => 'groups/studentwork')) }}
+                                <input name="student_id" type="hidden" value="{{$student->id}}">
+                                <input name="group_id" type="hidden" value="{{$group->id}}">
+                                {{ Form::submit('Check work', array('class' => 'btn btn-link p-0 width-100')) }}
+                                {{ Form::close()  }}
                             </div>
                             <div class="col-md-3">
                                 {{ Form::open(array('url' => 'groups/removeuser')) }}
@@ -51,7 +55,11 @@
                                 <p>{{$task->title}}</p>
                             </div>
                             <div class="col-md-3">
-                                <a href="#">View Results</a>
+                                {{ Form::open(array('url' => 'groups/taskresults')) }}
+                                <input type="hidden" name="task_id" value="{{$task->id}}">
+                                <input type="hidden" name="group_id" value="{{$group->id}}">
+                                {{ Form::submit("View Results", array("class" => "btn btn-link p-0 width-100")) }}
+                                {{ Form::close()  }}
                             </div>
                             <div class="col-md-3">
                                 {{ Form::open(array('url' => 'groups/removework')) }}

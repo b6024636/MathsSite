@@ -51,5 +51,8 @@ Route::post('/groups/adduser', 'Groups\GroupController@addUserToGroup');
 Route::post('/groups/removeuser', 'Groups\GroupController@removeUserFromGroup');
 Route::post('/groups/addwork', 'Groups\GroupController@addWorkToGroup');
 Route::post('/groups/removework', 'Groups\GroupController@removeWorkFromGroup');
+Route::post('/groups/studentwork', 'Tasks\TaskController@getCompletedTasksByUser');
+Route::post('/groups/taskresults', 'Tasks\TaskController@getCompletedTasksByGroup');
+
 
 Route::view('/admin', 'admin/admin');
