@@ -211,14 +211,14 @@ class GroupController extends Controller
                 foreach ($request->students as $studentId) {
                     $student = $this->students::find($studentId);
                     if (!in_array($request->group_id, explode(',', $student->assigned_groups)))
-                        $student->update(['assigned_groups' => $student->assigned_groups . $request->group_id . ',']);
+                        $student->update(['assigned_groups' => $student->assigned_groups . ',' . $request->group_id . ',']);
 
                 }
             } else {
                 foreach ($request->teachers as $teacherId) {
                     $teacher = $this->teachers::find($teacherId);
                     if (!in_array($request->group_id, explode(',', $teacher->assigned_groups)))
-                        $teacher->update(['assigned_groups' => $teacher->assigned_groups . $request->group_id . ',']);
+                        $teacher->update(['assigned_groups' => $teacher->assigned_groups . ',' . $request->group_id . ',']);
 
                 }
             }
@@ -258,13 +258,21 @@ class GroupController extends Controller
 
     /**
      * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function addWorkToGroup(Request $request)
     {
         if(!Auth::guard('teacher')->check())
             return redirect('/');
         $group = $this->group::find($request->group_id);
-        $group->update(['assigned_tasks' => $group->assigned_tasks . ',' . $request->task_id]);
+        if($group->assigned_tasks != '')
+        {
+            $groupWork = explode(',', $group->assigned_tasks);
+            $groupWork[] = $request->task_id;
+        }else{
+            $groupWork = $request->task_id;
+        }
+        $group->update(['assigned_tasks' => $groupWork]);
         return redirect('groups/group/'.$request->group_id);
     }
 
