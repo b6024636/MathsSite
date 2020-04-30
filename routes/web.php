@@ -29,6 +29,9 @@ Route::resource('/groups/group', 'Groups\GroupController');
 
 Route::get('/myschool', 'School\SchoolController@mySchool');
 
+//Route::view('/tasks/task/manage', 'tasks/managetasks');
+Route::get('/myschool/task/manage', 'Tasks\TaskController@manageTasks');
+
 Route::get('/tasks/task/begintask/{id}', 'Tasks\TaskController@beginTask')->where('id', '[0-9]+');;
 //Route::get('/tasks/task/finishtask', [ 'uses' => 'Tasks\TaskController@finishTask']);
 Route::post('/tasks/task/finishtask', 'Tasks\TaskController@finishTask');

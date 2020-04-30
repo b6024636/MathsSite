@@ -4,21 +4,21 @@
 @section('content')
     <!-- if there are creation errors, they will show here -->
     {{ HTML::ul($errors->all()) }}
-    {{ Form::open(array('url' => 'tasks/task')) }}
+    {{ Form::open(array('method' => 'PUT', 'route' => ['task.update', $chosenTask->id])) }}
     <div class="card">
         <div class="card-header">
-            <h1> Enter details to create a task</h1>
+            <h1>Edit task details</h1>
         </div>
         <div class="card-body">
             <div class="form-group">
                 <div class="form-input row mb-2">
                     <label class="col-md-6 font-weight-bold" for="title">Title</label>
-                    <input class="col-md-6" type="text" name="title" id="title" required>
+                    <input class="col-md-6" type="text" name="title" id="title" value="{{$chosenTask->title}}" required>
                 </div>
 
                 <div class="form-input mc-questions row mb-2">
                     <label class="col-md-6 font-weight-bold" for="questions">Questions</label>
-                    <input type="hidden" id="questions" name="questions">
+                    <input type="hidden" id="questions" name="questions" value="{{$chosenTask->questions}}">
                     <div class="d-flex flex-column">
                         <i>Questions added in order they are checked.</i>
                         <button type="button" data-toggle="modal" data-target="#task-modal" class="float-right btn btn-primary mb-1" id="add-work">Click to add questions</button>
@@ -36,13 +36,13 @@
                     <label class="col-md-6 font-weight-bold" for="topic">Topic</label>
                     <select class="col-md-6" name="topic" id="topic">
                         @foreach($topics as $topic)
-                            <option value="{{$topic->id}}">{{$topic->title}}</option>
+                            <option value="{{$topic->id}}" {{$topic->id == $chosenTask->topic ? 'selected="selected"' : ''}}>{{$topic->title}}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
 
-            {{ Form::submit('Create', array('class' => 'btn btn-primary disabled', 'id' => 'submit-btn')) }}
+            {{ Form::submit('Create', array('class' => 'btn btn-primary', 'id' => 'submit-btn')) }}
             {{ Form::close()  }}
         </div>
     </div>
@@ -50,7 +50,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between">
-                    <h2 class="modal-title">Add a task for the group</h2>
+                    <h2 class="modal-title">Edit Questions For Task</h2>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body" id="topics-body">
@@ -70,7 +70,8 @@
         </div>
     </div>
     <script>
-        let questions = [];
+        let questions = $('#questions').val().split(',');
+        $('#question-count').html('<strong>' + questions.length + ' Quesiton(s) Added</strong>');
         $('.topic-link').click(function(){
             event.preventDefault();
             let $row = $(this).closest('.topic-row'),

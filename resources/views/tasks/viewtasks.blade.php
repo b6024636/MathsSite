@@ -6,7 +6,7 @@
     @if($tasks == '')
         <h2 class="mb-4 mt-2"><strong>Pick a topic...</strong></h2>
         <div class="pt-md-4 col-md-12">
-            <div class="row">
+            <div class="row justify-content-center">
                 <?php $count = 0 ?>
                 @foreach($topics as $topic)
                     <div class="col-md-3 topic-col">
@@ -17,7 +17,7 @@
                     <?php $count++ ?>
                     @if($count % 4 == 0)
             </div>
-            <div class="row">
+            <div class="row justify-content-center">
                 @endif
                 @endforeach
             </div>

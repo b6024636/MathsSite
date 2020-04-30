@@ -94,32 +94,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        if(!Auth::guard('teacher')->check())
-            return redirect('/');
-
-        $user = Auth::guard('teacher')->user();
-        $topics = $this->topics::orderBy('title', 'asc')->get();
-
-        $questionArray = [];
-        foreach ($topics as $topic)
-        {
-            $questionArray[$topic->id] = [
-                'id' => $topic->id,
-                'title' => $topic->title,
-                'questions' => []
-            ];
-        }
-
-        foreach ($this->getAllQuestions() as $question)
-        {
-            $questionArray[$question->topic]['questions'][] = [
-                'id' => $question->id,
-                'question' => $question->Question,
-                'description' =>$question->Description
-            ];
-        }
-
-        return view('tasks/createtask', ['questions' => $this->getAllQuestions(), 'allQuestions' => $questionArray, 'topics' => $topics = $this->topics::orderBy('title', 'asc')->get()]);
+        return view('tasks/createtask', $this->manageTaskDetails());
     }
 
     /**
@@ -167,7 +142,11 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+        $array = $this->manageTaskDetails();
+
+        $array['chosenTask'] = $this->tasks::findOrFail($id);
+
+        return view('tasks/edittask', $array);
     }
 
     /**
@@ -179,7 +158,16 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $task = $this->tasks::findOrFail($id);
+
+        $task->title = $request->get('title');
+        $task->marks = $this->getFullMarksForTask(explode(',', $request->get('questions')));
+        $task->questions = $request->get('questions');
+        $task->is_private = $request->get('is-private') == 'on' ? true : false;
+        $task->topic = $request->get('topic');
+        $task->save();
+
+        return redirect('/myschool/task/manage');
     }
 
     /**
@@ -190,7 +178,26 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+
+        $this->taskCompleted::where('task_id', '=', $id)->delete();
+
+        $groups = $this->groups::all();
+
+        foreach($groups as $group)
+        {
+            $assigned_tasks = explode(',', $group->assigned_tasks);
+            if (($key = array_search($id, $assigned_tasks)) !== false) {
+                unset($assigned_tasks[$key]);
+            }
+            $group->assigned_tasks = implode(',', $assigned_tasks);
+            $group->save();
+        }
+
+        $task = $this->tasks::findOrFail($id);
+        $task->delete();
+        return redirect('/myschool/task/manage');
     }
     public function beginTask($id)
     {
@@ -372,4 +379,51 @@ class TaskController extends Controller
         return view('schools/viewcompletedgrouptasks', ['data' => $taskData]);
     }
 
+    /**
+     * @return mixed
+     */
+    public function manageTasks()
+    {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+        $teacher = Auth::guard('teacher')->user();
+        $tasks = $this->tasks::all();
+
+        return view('tasks/managetasks', ['tasks' => $tasks]);
+    }
+    public function manageTaskDetails()
+    {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+
+        $user = Auth::guard('teacher')->user();
+        $topics = $this->topics::orderBy('title', 'asc')->get();
+
+        $questionArray = [];
+        foreach ($topics as $topic)
+        {
+            $questionArray[$topic->id] = [
+                'id' => $topic->id,
+                'title' => $topic->title,
+                'questions' => []
+            ];
+        }
+
+        foreach ($this->getAllQuestions() as $question)
+        {
+            $questionArray[$question->topic]['questions'][] = [
+                'id' => $question->id,
+                'question' => $question->Question,
+                'description' =>$question->Description
+            ];
+        }
+
+        return [
+            'questions' => $this->getAllQuestions(),
+            'allQuestions' => $questionArray,
+            'topics' => $topics = $this->topics::orderBy('title', 'asc')->get()
+        ];
+
+
+    }
 }

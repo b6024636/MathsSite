@@ -110,6 +110,7 @@
     }
     function doNewQuestion(questions, questionCount, maxQuestions){
         let questionId = questions[questionCount];
+        $('#next-button').addClass('disabled');
         $.ajax({
             url: '/questions/question/' + questionId,
             data: {json:true},
@@ -157,6 +158,9 @@
                     }
                     $html += '</div>';
                     $('#mc').html($html);
+                    $('input[name=questionradio]').click(function(){
+                       $('#next-button').removeClass('disabled');
+                    });
                 }
                 else if(data.question_type == 'SA'){
                     $('#mc').html('');

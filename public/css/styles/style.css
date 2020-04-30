@@ -153,11 +153,11 @@ table.table a{
 .btn-link{
     color: #007bff;
 }
-.task-table .task-row:nth-child(2n+1){
+.task-table .task-row:nth-child(2n+1), .results-table .result-row:nth-child(2n+1){
     background-color: #eeeded;
 }
-.task-table .task-row:hover{
-    background-color: #cccaca;
+.task-table .task-row:hover, .results-table .result-row:hover{
+    background-color: #d9d7d7;
 }
 
 .task-icon{
@@ -211,6 +211,12 @@ table.table a{
 .card-header, .card-header h2{
     font-weight: bold;
 }
+footer{
+    margin: 0 -48px;
+}
+.page-footer{
+
+}
 @media only screen and (max-width: 600px){
     .mobile-hide{
         display: none;
@@ -225,8 +231,8 @@ table.table a{
         font-size: 12px;
     }
     .task-button{
-        height: 120px;
-        width: 120px;
+        height: 105px;
+        width: 105px;
         font-size: 12px;
         border: 2px solid #1976d2;
     }
@@ -241,5 +247,9 @@ table.table a{
     }
     .task-icon{
         font-size: unset;
+    }
+    .content.container{
+        padding-right: unset;
+        padding-left: unset;
     }
 }

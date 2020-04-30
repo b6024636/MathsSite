@@ -203,11 +203,11 @@
                         <!--First row-->
                         <div class="row">
                             <div class="col-1 mr-3">
-                                <i class="fas fa-code fa-2x indigo-text"></i>
+                                <i class="fas fa-graduation-cap fa-2x indigo-text"></i>
                             </div>
                             <div class="col-10">
-                                <h5 class="feature-title">Bootstrap 4</h5>
-                                <p class="grey-text">Thanks to MDB you can take advantage of all feature of newest Bootstrap 4.</p>
+                                <h5 class="feature-title">Online Virtual Learning Environment</h5>
+                                <p class="grey-text">Aid learning and productivity online.</p>
                             </div>
                         </div>
                         <!--/First row-->

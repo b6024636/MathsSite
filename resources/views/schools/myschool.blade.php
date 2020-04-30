@@ -76,10 +76,11 @@
                 <div class="row mb-3">
                     <div class="card width-100">
                         <div class="card-header">
-                            <p>Create a new task</p>
+                            <p>Tasks</p>
                         </div>
                         <div class="card-body d-flex justify-content-center">
-                            <a href="/tasks/task/create">Create Task</a>
+                            <a href="/tasks/task/create" class="btn btn-blue">Create Task</a>
+                            <a href="/myschool/task/manage" class="btn btn-blue">Manage Tasks</a>
                         </div>
                     </div>
                 </div>

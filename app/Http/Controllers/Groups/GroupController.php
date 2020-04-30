@@ -272,7 +272,7 @@ class GroupController extends Controller
         }else{
             $groupWork = $request->task_id;
         }
-        $group->update(['assigned_tasks' => $groupWork]);
+        $group->update(['assigned_tasks' => implode(',', $groupWork)]);
         return redirect('groups/group/'.$request->group_id);
     }
 

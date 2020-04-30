@@ -153,8 +153,10 @@
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="/myschool">View</a>
-                            <a class="dropdown-item" href="#">Link 2</a>
-                            <a class="dropdown-item" href="#">Link 3</a>
+                            @if(Auth::guard('teacher')->check())
+                                <a class="dropdown-item" href="/myschool/task/manage">Manage Tasks</a>
+                                <a class="dropdown-item" href="/register/student">Register a new student</a>
+                            @endif
                         </div>
                     </li>
                 @endif
