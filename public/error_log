@@ -1,0 +1,1 @@
+[30-Apr-2020 19:32:59 UTC] PHP Fatal error:  Allowed memory size of 201326592 bytes exhausted (tried to allocate 197136384 bytes) in /home/grahnmrr/public_html/app/Http/Controllers/School/SchoolController.php on line 252

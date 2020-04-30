@@ -165,7 +165,7 @@
         </div>
     </div>
 </nav>
-<div class="main-container d-flex position-ref full-height flex-column">
+<div class="main-container d-flex position-ref full-height flex-column justify-content-between">
     <div class="content container">
         @yield('content')
     </div>

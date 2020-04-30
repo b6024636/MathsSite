@@ -221,9 +221,7 @@
                             </div>
                             <div class="col-10">
                                 <h5 class="feature-title">Detailed documentation</h5>
-                                <p class="grey-text">We give you detailed user-friendly documentation at your disposal. It will help
-                                    you to implement your ideas
-                                    easily.
+                                <p class="grey-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                 </p>
                             </div>
                         </div>
@@ -237,10 +235,9 @@
                                 <i class="fas fa-graduation-cap fa-2x cyan-text"></i>
                             </div>
                             <div class="col-10">
-                                <h5 class="feature-title">Lots of tutorials</h5>
-                                <p class="grey-text">We care about the development of our users. We have prepared numerous tutorials,
-                                    which allow you to learn
-                                    how to use MDB as well as other technologies.</p>
+                                <h5 class="feature-title">Quisque vestibulum</h5>
+                                <p class="grey-text">Sed scelerisque, purus non venenatis egestas, turpis magna aliquam
+                                    dui, eget sagittis orci velit non ante.</p>
                             </div>
                         </div>
                         <!--/Third row-->
@@ -251,10 +248,9 @@
                     <!--Grid column-->
                     <div class="col-lg-6 col-md-12">
 
-                        <p class="h5 text-center mb-4">Watch our "5 min Quick Start" tutorial</p>
-                        <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/cXTThxoywNQ" allowfullscreen></iframe>
-                        </div>
+                        <p class="h5 text-center mb-4">Etiam vitae malesuada lorem.</p>
+                            <img src="{{url('/images/header.png')}}" class="img-fluid z-depth-1-half width-100"
+                                 alt="">
                     </div>
                     <!--/Grid column-->
 

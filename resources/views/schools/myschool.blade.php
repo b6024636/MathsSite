@@ -48,31 +48,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-2 col-sm-12">
-
-            </div>
-            <div class="col-md-5 col-sm-12">
-                <div class="row mb-3">
-                    <div class="card width-100">
-                        <div class="card-header">
-                            <p>Add a new staff member</p>
-                        </div>
-                        <div class="card-body d-flex justify-content-center">
-                            <a href="/register/teacher" class="btn btn-blue">Add Teacher</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="card width-100">
-                        <div class="card-header">
-                            <p>Add a new student</p>
-                        </div>
-                        <div class="card-body d-flex justify-content-center">
-                            <a href="/register/student" class="btn btn-blue">Add Student</a>
-                        </div>
-                    </div>
-                </div>
                 <div class="row mb-3">
                     <div class="card width-100">
                         <div class="card-header">
@@ -81,6 +56,33 @@
                         <div class="card-body d-flex justify-content-center">
                             <a href="/tasks/task/create" class="btn btn-blue">Create Task</a>
                             <a href="/myschool/task/manage" class="btn btn-blue">Manage Tasks</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-12">
+
+            </div>
+            <div class="col-md-5 col-sm-12">
+                <div class="row mb-3">
+                    <div class="card width-100">
+                        <div class="card-header">
+                            <p>Staff</p>
+                        </div>
+                        <div class="card-body d-flex justify-content-center">
+                            <a href="/register/teacher" class="btn btn-blue">Add Staff Member</a>
+                            <a href="/manage/teachers" class="btn btn-blue">Manage Staff</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="card width-100">
+                        <div class="card-header">
+                            <p>Students</p>
+                        </div>
+                        <div class="card-body d-flex justify-content-center">
+                            <a href="/register/student" class="btn btn-blue">Add Student</a>
+                            <a href="/manage/students" class="btn btn-blue">Manage Students</a>
                         </div>
                     </div>
                 </div>
