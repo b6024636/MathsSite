@@ -8,5 +8,6 @@ class Topics extends Model
 {
     protected $fillable = [
         'title',
+        'icon',
     ];
 }

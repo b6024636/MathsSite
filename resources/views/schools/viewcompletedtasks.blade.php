@@ -5,6 +5,7 @@
 
     <h1>{{$data['code']['code']}} - {{$data['student']->student_id}}</h1>
     <hr/>
+    <a href="{{url()->previous()}}">&laquo Back to group</a>
     <div class="row">
         <div class="col-md-4">
             <p class="font-weight-bold">Title</p>

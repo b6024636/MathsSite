@@ -6,14 +6,20 @@
     <h2>{{$task}}</h2>
     <div class="text-md-center" id="questions-container">
         <input type="submit" value="Ready to start?" class="btn btn-primary" id="beginTask">
-        <h1 id="question" data-questionid=""></h1>
-        <div id="mc">
+        <div class="card hide" id="card">
+            <div class="card-header">
+                <h2 id="question" data-questionid=""></h2>
+            </div>
+            <div class="card-body">
+                <div id="mc">
 
-        </div>
-        <div id="sa">
+                </div>
+                <div id="sa">
 
+                </div>
+            </div>
         </div>
-        <input type="submit" value="Next" class="btn btn-success hide" id="next-button">
+        <input type="submit" value="Next" class="btn btn-primary hide" id="next-button">
     </div>
     <div class="modal">
         <div class="modal-dialog">
@@ -40,6 +46,7 @@
         questionsScores['taskId'] = {taskId: '{{$taskId}}'};
         //console.log(maxQuestions);
         $button.click(function () {
+            $('#card').removeClass('hide');
             doNewQuestion(questions, questionCount, maxQuestions);
             $button.remove();
         });
@@ -61,9 +68,8 @@
                 questionCount++;
                 doNewQuestion(questions, questionCount, maxQuestions);
             }else{
-                console.log(JSON.stringify(questionsScores));
                 $.ajax({
-                    url: '/tasks/task/finishtask/',
+                    url: '/tasks/task/finishtask',
                     // data: { json:true },
                     data: { scores: JSON.stringify(questionsScores) },
                     type: 'POST',
@@ -72,8 +78,6 @@
                     },
                     success: function(__data, status){
                         let _data = JSON.parse(__data);
-                        console.log(_data);
-                        console.log(_data);
                         $('#questions-container').html('');
                         let html = '' +
                             '<div class="row">' +
@@ -90,8 +94,8 @@
                             '<div class="col-md-12 d-flex justify-content-between">' +
                             '<a href="/tasks/task">Go back to tasks?</a>' +
                             '<a href="/">Go back to homepage?</a>';
-                            if(_data.user != 'regular')
-                                html += '<a href="/myschool">Back to my school</a>';
+                        if(_data.user != 'regular')
+                            html += '<a href="/myschool">Back to my school</a>';
 
                         html+= '</div>' +
                             '</div>';
@@ -117,9 +121,11 @@
                 $('#question').html(data.question);
                 $('#question').attr('data-questionid', data.id);
                 if(data.question_type == 'MC'){
-                    $('#sc').html('');
+                    $('#sa').html('');
                     var optionalAnswersArr = (data.optional_answers).split(',');
                     var $html = '<div class="form-group">';
+                    let answerIncluded = false;
+                    optionalAnswersArr = optionalAnswersArr.sort(() => Math.random() - 0.5);
                     for(i = 0; i < optionalAnswersArr.length; i++)
                     {
                         $html += '' +
@@ -127,7 +133,27 @@
                             optionalAnswersArr[i] +
                             '<input type="radio" name="questionradio" value='+ optionalAnswersArr[i] +'>' +
                             '<span class="checkmark"></span>' +
-                            '</label>'
+                            '</label>';
+                        if(answerIncluded == false){
+                            if(Math.round(optionalAnswersArr.length / 2) == Math.round(Math.random() * optionalAnswersArr.length)){
+                                $html += '' +
+                                    '<label class="container question-container">' +
+                                    data.answer +
+                                    '<input type="radio" name="questionradio" value='+ data.answer +'>' +
+                                    '<span class="checkmark"></span>' +
+                                    '</label>';
+                                answerIncluded = true;
+                            }
+                        }
+                    }
+                    if(answerIncluded == false){
+                        $html += '' +
+                            '<label class="container question-container">' +
+                            data.answer +
+                            '<input type="radio" name="questionradio" value='+ data.answer +'>' +
+                            '<span class="checkmark"></span>' +
+                            '</label>';
+                        answerIncluded = true;
                     }
                     $html += '</div>';
                     $('#mc').html($html);
@@ -143,38 +169,6 @@
                     $('#sa').html(html);
 
                 }
-                // $('#next-button').click(function(){
-                //     questionsScores[questionCount] = 0;
-                //     if(data.question_type == 'MC') {
-                //         // console.log($('input[name="questionradio"]:checked').val() + ' Given Answer');
-                //         // console.log(data.answer + ' Answer');
-                //         if ($('input[name="questionradio"]:checked').val() == data.answer){
-                //             score += data.marks;
-                //             questionsScores[questionCount] = data.marks;
-                //         }
-                //     }else if(data.question_type == 'SA'){
-                //         if ($('#sc-answer').val() == data.answer) {
-                //             score += data.marks;
-                //             questionsScores[questionCount] = data.marks;
-                //         }
-                //     }
-                //     if(questionCount + 1 < maxQuestions) {
-                //         // quesitonId++;
-                //         questionCount++;
-                //         doNewQuestion(questions, questionCount, maxQuestions);
-                //     }else{
-                //         console.log(questionsScores);
-                //         $.ajax({
-                //             url: '/tasks/task/finishtask',
-                //             data: { scores: JSON.stringify(questionsScores) },
-                //             type: 'GET',
-                //             success: function(_data, status){
-                //                 console.log(_data);
-                //             }
-                //         })
-                //     }
-                // });
-
             }
         })
     }

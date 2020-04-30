@@ -5,6 +5,7 @@
 
     <h1>{{$data['details']['group']->code}} - {{$data['details']['task']->title}}</h1>
     <hr/>
+    <a href="{{url()->previous()}}">&laquo Back to group</a>
     <div class="row">
         <div class="col-md-4">
             <p class="font-weight-bold">Title</p>

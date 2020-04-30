@@ -3,14 +3,11 @@
 
 @section('content')
 
-    <h1>{{$school->Name}}</h1>
+    <h1 class="font-weight-bold">{{$school->Name}}</h1>
     @auth('teacher')
         <p>Hello, {{$user->name}}</p>
         <div class="row">
-            <div class="col-md-6">
-
-            </div>
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-5 col-sm-12 mb-3">
                 <div class="row d-flex flex-column card mb-2">
                     <div class="card-header">
                         <a id="create-group-btn" class="text" href="#">Create a new group</a>
@@ -48,6 +45,51 @@
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-12">
+
+            </div>
+            <div class="col-md-5 col-sm-12">
+                <div class="row mb-3">
+                    <div class="card width-100">
+                        <div class="card-header">
+                            <p>Add a new staff member</p>
+                        </div>
+                        <div class="card-body d-flex justify-content-center">
+                            <a href="/register/teacher" class="btn btn-blue">Add Teacher</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="card width-100">
+                        <div class="card-header">
+                            <p>Add a new student</p>
+                        </div>
+                        <div class="card-body d-flex justify-content-center">
+                            <a href="/register/student" class="btn btn-blue">Add Student</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="card width-100">
+                        <div class="card-header">
+                            <p>Create a new task</p>
+                        </div>
+                        <div class="card-body d-flex justify-content-center">
+                            <a href="/tasks/task/create">Create Task</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="card width-100">
+                        <div class="card-header">
+                            <p>Add a new question</p>
+                        </div>
+                        <div class="card-body d-flex justify-content-center">
+                            <a href="/questions/question/create" class="btn btn-blue">Create question</a>
                         </div>
                     </div>
                 </div>

@@ -10,10 +10,13 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
+{{ HTML::style('css/bootstrap.css') }}
+{{ HTML::style('css/mdb.css') }}
+{{ HTML::style('css/style.css') }}
 {{ HTML::script('js/jquery.js') }}
 {{ HTML::script('js/bootstrap.js') }}
 {{ HTML::style('css/styles/style.css') }}
-{{ HTML::style('css/bootstrap.css') }}
+    <script src="https://kit.fontawesome.com/54970f57fd.js" crossorigin="anonymous"></script>
 
 <!-- Styles -->
     <style>
@@ -60,6 +63,41 @@
             margin-bottom: 30px;
         }
     </style>
+    <style type="text/css">
+        html,
+        body,
+        header,
+        .carousel {
+            height: 60vh;
+        }
+
+        @media (max-width: 740px) {
+
+            html,
+            body,
+            header,
+            .carousel {
+                height: 100vh;
+            }
+        }
+
+        @media (min-width: 800px) and (max-width: 850px) {
+
+            html,
+            body,
+            header,
+            .carousel {
+                height: 100vh;
+            }
+        }
+
+        @media (min-width: 800px) and (max-width: 850px) {
+            .navbar:not(.top-nav-collapse) {
+                background: #929FBA !important;
+            }
+        }
+
+    </style>
 
 
 </head>
@@ -67,7 +105,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" id="banner">
     <div class="container">
         <!-- Brand -->
-        <a class="navbar-brand" href="/"><span>Logo</span> Here</a>
+        <a class="navbar-brand" href="/"><strong>Tailored Maths</strong></a>
 
         <!-- Toggler/collapsibe Button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -76,7 +114,7 @@
 
         <!-- Navbar links -->
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="/tasks/task">Tasks</a>
                 </li>
@@ -86,6 +124,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                 </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
                 @if(Auth::guard('admin')->check() || Auth::guard('teacher')->check() || Auth::guard('student')->check())
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('logout') }}"
@@ -104,8 +144,8 @@
                             Login
                         </a>
                     </li>
-            @endif
-            @if(Auth::guard('teacher')->check() || Auth::guard('student')->check())
+                @endif
+                @if(Auth::guard('teacher')->check() || Auth::guard('student')->check())
                 <!-- Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
@@ -131,5 +171,7 @@
 {{--    <p>footer</p>--}}
 {{--</div>--}}
 {{ HTML::script('js/maths/school.js') }}
+{{ HTML::script('js/popper.min.js') }}
+{{ HTML::script('js/mdb.js') }}
 </body>
 </html>

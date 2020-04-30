@@ -10,38 +10,124 @@
     <div class="form-group">
         <div class="form-input row mb-2">
             <label class="col-md-6" for="title">Title</label>
-            <input class="col-md-6" type="text" name="title" id="title">
+            <input class="col-md-6" type="text" name="title" id="title" required>
         </div>
 
         <div class="form-input mc-questions row mb-2">
-            <label class="col-md-6" for="answer">Questions</label>
-            <fieldset id="questions" class="checkbox-createtask">
-            @foreach($questions as $question)
-                <label class="question-container">
-                    {{$question->Question}}
-                    <input type="checkbox" name="questions[]" value="{{$question->id}}">
-                    <span class="checkmark"></span>
-                </label>
-            @endforeach
-            </fieldset>
-        </div>
+            <label class="col-md-6" for="questions">Questions</label>
+            <input type="hidden" id="questions" name="questions">
+            <div class="d-flex flex-column">
+                <i>Questions added in order they are checked.</i>
+                <button type="button" data-toggle="modal" data-target="#task-modal" class="float-right btn btn-primary mb-1" id="add-work">Click to add questions</button>
+            </div>
+            <p id="question-count" class="ml-4"><strong>0 Questions Added</strong></p>
 
+        </div>
 
         <div class="form-input row mb-2">
             <label class="col-md-6" for="is-private">Make Task Private</label> <input class="col-md-6" type="checkbox" name="is-private" id="is-private">
         </div>
 
+
         <div class="form-input row mb-2">
-            <label class="col-md-6" for="school">School</label> <input class="col-md-6" type="text" name="school" id="school">
-        </div>
-        <div class="form-input row mb-2">
-            <label class="col-md-6" for="topic">Topic</label> <input class="col-md-6" type="text" name="topic" id="topic">
+            <label class="col-md-6" for="topic">Topic</label>
+            <select class="col-md-6" name="topic" id="topic">
+                @foreach($topics as $topic)
+                    <option value="{{$topic->id}}">{{$topic->title}}</option>
+                @endforeach
+            </select>
         </div>
     </div>
 
-    {{ Form::submit('Create', array('class' => 'btn btn-primary')) }}
+    {{ Form::submit('Create', array('class' => 'btn btn-primary disabled', 'id' => 'submit-btn')) }}
     {{ Form::close()  }}
+    <div class="modal fade" id="task-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between">
+                    <h2 class="modal-title">Add a task for the group</h2>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="topics-body">
+                    @foreach($allQuestions as $topic)
+                        <div class="row p-2 topic-row">
+                            <a href="#" class="topic-link" data-title="{{$topic['title']}}">{{$topic['title']}} &raquo;</a>
+                            <div class="hide topic-tasks">
+                                {{json_encode($topic['questions'])}}
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="modal-body hide " id="tasks-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let questions = [];
+        $('.topic-link').click(function(){
+            event.preventDefault();
+            let $row = $(this).closest('.topic-row'),
+                $title = $(this).attr('data-title'),
+                $questions = JSON.parse($row.find('.topic-tasks:first').html());
+
+
+            let $html = '<a href="#" id="topic-back">&laquo Back to topics</a>';
+
+            if($questions != '[]') {
+                $html += '<div class="row p-2 task-row font-weight-bold">' +
+                    '<div class="col-md-12">' +
+                    '<p>Descirption</p>' +
+                    '</div>' +
+                    '</div>';
+                for (var k in $questions) {
+                    let checked = '';
+                    if(questions.includes(($questions[k].id).toString()))
+                        checked = 'checked';
+                    $html += '' +
+                        '<div class="row p-2 task-row">' +
+                        '<div class="col-md-12">' +
+                        '<label class="d-flex justify-content-between">' +
+                        '<p>' + $questions[k].description + '</p>' +
+                        '<input type="checkbox" name="questionsBox" value="' + $questions[k].id + '" class="question-checkbox" ' + checked + '>\n' +
+                        '</label>' +
+                        '</div>' +
+                        '</div>';
+                }
+            }else{
+                $html += '<div class="row p-2 task-row font-weight-bold">' +
+                    '<p>N/A</p>' +
+                    '</div>'
+            }
+            $('#tasks-body').html($html);
+            $('.question-checkbox').change(function(){
+                if($(this).is(":checked")){
+                    questions.push($(this).val());
+                }
+                else{
+                    let index = questions.indexOf($(this).val());
+                    questions.splice(index, 1);
+                }
+                $('#questions').val(questions.toString());
+                $('#question-count').html('<strong>' + questions.length + ' Quesiton(s) Added</strong>');
+                if(questions.length > 0){
+                    $('#submit-btn').removeClass('disabled');
+                }
+                else{
+                    $('#submit-btn').addClass('disabled');
+                }
+            });
+            $('#topics-body').hide();
+            $('#tasks-body').show();
+            $('.modal-title').html($title);
+            $('#topic-back').click(function(){
+                event.preventDefault();
+                $('#tasks-body').hide();
+                $('#tasks-body').html('');
+                $('.modal-title').html('Add a task for the group');
+                $('#topics-body').show();
+            })
+        });
+    </script>
 @endsection
-<script>
-    $('#questions').find
-</script>

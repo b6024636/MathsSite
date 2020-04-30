@@ -17,17 +17,17 @@
                 @else
                     @foreach($students as $student)
                         <div class="row p-2">
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-sm-6">
                                 <p>{{$student->student_id}}</p>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-sm-3">
                                 {{ Form::open(array('url' => 'groups/studentwork')) }}
                                 <input name="student_id" type="hidden" value="{{$student->id}}">
                                 <input name="group_id" type="hidden" value="{{$group->id}}">
                                 {{ Form::submit('Check work', array('class' => 'btn btn-link p-0 width-100')) }}
                                 {{ Form::close()  }}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-sm-3">
                                 {{ Form::open(array('url' => 'groups/removeuser')) }}
                                 <input name="group_id" type="hidden" value="{{$group->id}}">
                                 <input name="user" type="hidden" value="student">

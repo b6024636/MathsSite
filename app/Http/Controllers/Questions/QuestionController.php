@@ -3,10 +3,27 @@
 namespace App\Http\Controllers\Questions;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Topics\Topics;
 
 class QuestionController extends Controller
 {
+    /**
+     * @var Topics
+     */
+    private $topics;
+
+    /**
+     * QuestionController constructor.
+     * @param Topics $topics
+     */
+    public function __construct(Topics $topics)
+    {
+        $this->topics = $topics;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +41,9 @@ class QuestionController extends Controller
      */
     public function create()
     {
-        return view('questions/createquestion');
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+        return view('questions/createquestion', ['topics' => $topics = $this->topics::orderBy('title', 'asc')->get()]);
     }
 
     /**
@@ -35,6 +54,10 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+
+        $user = Auth::guard('teacher')->user();
 
         $data = \App\Models\Questions\Questions::create([
             'Type' => $request->get('question-type'),
@@ -45,12 +68,11 @@ class QuestionController extends Controller
             'Answer' => $request->get('answer'),
             'Optional_Answers' => $request->get('optional-answers'),
             'Is_Private' => $request->get('is-private') == 'on' ? true : false,
-            'School' => $request->get('school'),
-            'CreatedBy' => 'Test',
+            'School' => $user->assigned_school,
+            'CreatedBy' => $user->username,
             'topic' => $request->get('topic'),
         ]);
-
-        return view('tasks/task');
+        return redirect('/myschool');
     }
 
     /**

@@ -188,6 +188,7 @@ class SchoolController extends Controller
             $school = $this->school::find($user->assigned_school);
             $groups = $this->groups::where('assigned_school', '=', $user->assigned_school)->get();
             $tasks = [];
+            $usedId = [];
             if(Auth::guard('student')->check())
             {
                 foreach (explode(',', $user->assigned_groups) as $group_id)
@@ -199,7 +200,10 @@ class SchoolController extends Controller
                     {
                         if(!$task_id)
                             continue;
-                        $tasks[] = $this->tasks::find($task_id);
+                        if(!isset($usedId[$task_id])) {
+                            $usedId[$task_id] = $task_id;
+                            $tasks[] = $this->tasks::find($task_id);
+                        }
                     }
                 }
             }

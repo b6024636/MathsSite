@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\Input;
 use App\Models\Users\Students;
 use App\Models\Groups\Groups;
+use App\Models\Topics\Topics;
 
 class TaskController extends Controller
 {
@@ -30,6 +31,10 @@ class TaskController extends Controller
      * @var Groups
      */
     private $groups;
+    /**
+     * @var Topics
+     */
+    private $topics;
 
     /**
      * TaskController constructor.
@@ -38,13 +43,15 @@ class TaskController extends Controller
      * @param TaskCompleted $taskCompleted
      * @param Students $students
      * @param Groups $groups
+     * @param Topics $topics
      */
     public function __construct(
         Questions $question,
         Tasks $tasks,
         TaskCompleted $taskCompleted,
         Students $students,
-        Groups $groups
+        Groups $groups,
+        Topics $topics
     )
     {
         $this->question = $question;
@@ -52,18 +59,32 @@ class TaskController extends Controller
         $this->taskCompleted = $taskCompleted;
         $this->students = $students;
         $this->groups = $groups;
+        $this->topics = $topics;
     }
 
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = $this->tasks::all();
+        $tasks = '';
+        $chosenTopic = '';
+        $title = '';
+        if(isset($request->topic))
+        {
+            $tasks = $this->tasks::where('topic', '=', $request->topic)->get();
+            $chosenTopic = $this->topics::where('id', '=', $request->topic)->get();
+            foreach ($chosenTopic as $_topic)
+                $title = $_topic->title;
+        }
 
-        return view('tasks/viewtasks', ['allTasks' => $tasks]);
+
+        $topics = $this->topics::orderBy('title', 'asc')->get();
+
+        return view('tasks/viewtasks', ['topics' => $topics, 'tasks' => $tasks, 'topicId' => $request->topic, 'chosenTopic' => $title ]);
     }
 
     /**
@@ -73,7 +94,32 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return view('tasks/createtask', ['questions' => $this->getAllQuestions()]);
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+
+        $user = Auth::guard('teacher')->user();
+        $topics = $this->topics::orderBy('title', 'asc')->get();
+
+        $questionArray = [];
+        foreach ($topics as $topic)
+        {
+            $questionArray[$topic->id] = [
+                'id' => $topic->id,
+                'title' => $topic->title,
+                'questions' => []
+            ];
+        }
+
+        foreach ($this->getAllQuestions() as $question)
+        {
+            $questionArray[$question->topic]['questions'][] = [
+                'id' => $question->id,
+                'question' => $question->Question,
+                'description' =>$question->Description
+            ];
+        }
+
+        return view('tasks/createtask', ['questions' => $this->getAllQuestions(), 'allQuestions' => $questionArray, 'topics' => $topics = $this->topics::orderBy('title', 'asc')->get()]);
     }
 
     /**
@@ -84,18 +130,22 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Auth::guard('teacher')->check())
+            return redirect('/');
+
+        $user = Auth::guard('teacher')->user();
         $data = $this->tasks::create([
             'title' => $request->get('title'),
             'rating' => 0,
-            'marks' => $this->getFullMarksForTask($request->get('questions')),
-            'questions' => implode(',', $request->get('questions')),
+            'marks' => $this->getFullMarksForTask(explode(',', $request->get('questions'))),
+            'questions' => $request->get('questions'),
             'is_private' => $request->get('is-private') == 'on' ? true : false,
-            'school' => $request->get('school'),
-            'created_by' => 'Test',
+            'school' => $user->assigned_school,
+            'created_by' => $user->username,
             'topic' => $request->get('topic'),
         ]);
 
-        return $this->index();
+        return redirect('/myschool');
     }
 
     /**

@@ -7,6 +7,9 @@ nav{
 .hide{
     display: none;
 }
+.width-100{
+    width: 100%;
+}
 
 .shrink {
     padding-top: 0;
@@ -139,4 +142,104 @@ body{
     background-image:
         linear-gradient(91deg, transparent 50%, #A2ECFB 50%),
         linear-gradient(90deg, #A2ECFB 50%, transparent 50%);
+}
+strong{
+    font-weight: bold;
+}
+table.table a{
+    color: #007bff;
+}
+
+.btn-link{
+    color: #007bff;
+}
+.task-table .task-row:nth-child(2n+1){
+    background-color: #eeeded;
+}
+.task-table .task-row:hover{
+    background-color: #cccaca;
+}
+
+.task-icon{
+    color: #1976D2;
+    font-size: 26px;
+}
+.task-button{
+    border: 4px solid #1976D2;
+    height: 250px;
+    width: 250px;
+    color: black;
+    font-size: 22px;
+    transition: 200ms ease-in-out;
+}
+.task-button:hover{
+    -webkit-box-shadow: 0px 8px 13px 3px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 8px 13px 3px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 13px 3px rgba(0,0,0,0.2);
+    transform: translateY(-5px);
+    color: black;
+}
+.task-arrow{
+    opacity: 0;
+    transition: 200ms ease-in-out;
+    transition-delay: 100ms;
+    font-size: 24px;
+    position: relative;
+    left: 50px;
+    color: #999AC6;
+}
+.task-button:hover .task-arrow{
+    display: block;
+    opacity: 1;
+    left: 0;
+    height: auto;
+}
+.align-text-center{
+    text-align: center;
+}
+.topic-col{
+    margin-bottom: 15px;
+}
+.content .btn-primary{
+    background-color: #1976D2!important;
+}
+.card-header{
+    background-color: #B8BACF;
+    color: white;
+    font-size: 24px;
+}
+.card-header, .card-header h2{
+    font-weight: bold;
+}
+@media only screen and (max-width: 600px){
+    .mobile-hide{
+        display: none;
+    }
+    .btn.btn-sm.mobile-btn{
+        padding: 0.5rem 0.6rem;
+    }
+    .task-table .task-row .col-md-3{
+        width: auto;
+    }
+    .task-table .task-row .task-title{
+        font-size: 12px;
+    }
+    .task-button{
+        height: 120px;
+        width: 120px;
+        font-size: 12px;
+        border: 2px solid #1976d2;
+    }
+    .topic-col{
+        width: unset;
+        padding-right: 8px;
+        padding-left: 8px;
+    }
+    .task-arrow{
+        font-size: 12px;
+        height: 0;
+    }
+    .task-icon{
+        font-size: unset;
+    }
 }

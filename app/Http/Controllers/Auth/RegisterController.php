@@ -94,6 +94,12 @@ class RegisterController extends Controller
         ]);
     }
 
+    /**
+     * Create a new teacher user instance after a valid registration.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     protected function createTeacher(Request $request)
     {
         $this->validator($request->all())->validate();
